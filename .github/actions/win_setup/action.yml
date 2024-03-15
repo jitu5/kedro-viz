@@ -1,0 +1,13 @@
+name: win_setup
+inputs:
+  python_version:
+    required: false
+runs:
+  using: composite
+  steps:
+  - uses: actions/checkout@v4.1.0
+  - uses: "./.github/actions/win_setup_python_env"
+    with:
+      python_version: "${{ inputs.python_version }}"
+  - uses: "./.github/actions/nvm_use_npm_install"
+  - uses: "./.github/actions/npm_build"

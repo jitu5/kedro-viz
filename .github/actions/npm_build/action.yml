@@ -1,0 +1,9 @@
+name: npm_build
+runs:
+  using: composite
+  steps:
+  - name: Build React application
+    run: |-
+      node -v
+      make build
+    shell: bash

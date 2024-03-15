@@ -1,0 +1,17 @@
+name: install_node_dependencies
+runs:
+  using: composite
+  steps:
+  - uses: actions/setup-node@v4.0.0
+    with:
+      node-version: 16.13.2
+  - id: npm-cache-dir
+    run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+    shell: bash
+  - uses: actions/cache@v3.3.2
+    with:
+      path: "${{ steps.npm-cache-dir.outputs.dir }}"
+      key: "${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}"
+      restore-keys: "${{ runner.os }}-node-"
+  - run: npm ci
+    shell: bash
