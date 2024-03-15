@@ -1,4 +1,4 @@
-name: kedro-org/kedro-viz/deploy_demo
+name: deploy_demo
 on:
   workflow_dispatch:
     inputs:
