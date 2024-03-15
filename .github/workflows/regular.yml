@@ -1,0 +1,20 @@
+name: kedro-org/kedro-viz/regular
+on:
+  push:
+env:
+  AWS_REGION: xxxxst-2
+  CACHE_VERSION: xxxx
+  NPM_TOKEN: xxxx5775
+  SNYK_TOKEN: xxxxa727
+  TWINE_NON_INTERACTIVE: xxxx
+  TWINE_PASSWORD: xxxxi3Xc
+  TWINE_REPOSITORY_URL: xxxxacy/
+  TWINE_USERNAME: xxxxen__
+jobs:
+  path-filtering_filter:
+    if: # GitHub does not currently support regular expressions inside if conditions
+#         github.ref == 'refs/tags//^v[0-9]+\.[0-9]+\.[0-9]+$/'
+    runs-on: ubuntu-latest
+    steps:
+#     # This item has no matching transformer
+#     - circleci_path_filtering_job_filter:

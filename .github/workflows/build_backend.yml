@@ -1,0 +1,118 @@
+name: kedro-org/kedro-viz/build_backend
+on:
+  workflow_dispatch:
+    inputs:
+      backend_change:
+        required: true
+      ci_change:
+        required: true
+      frontend_change:
+        required: true
+env:
+  AWS_REGION: xxxxst-2
+  CACHE_VERSION: xxxx
+  NPM_TOKEN: xxxx5775
+  SNYK_TOKEN: xxxxa727
+  TWINE_NON_INTERACTIVE: xxxx
+  TWINE_PASSWORD: xxxxi3Xc
+  TWINE_REPOSITORY_URL: xxxxacy/
+  TWINE_USERNAME: xxxxen__
+jobs:
+  e2e_tests:
+    if: ${{ inputs.backend_change }} || ${{ inputs.ci_change }}
+    runs-on: ubuntu-latest
+    container:
+      image: cimg/python:${{ matrix.python_version }}-node
+    strategy:
+      matrix:
+        python_version:
+        - '3.9'
+        - '3.10'
+        - '3.11'
+    steps:
+#     # This item has no matching transformer
+#     - setup:
+    - name: Run all end to end tests
+      run: make e2e-tests
+  win_e2e_tests:
+    if: ${{ inputs.backend_change }} || ${{ inputs.ci_change }} && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version:
+        - '3.9'
+        - '3.10'
+        - '3.11'
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/win_setup"
+      with:
+        python_version: "${{ matrix.python_version }}"
+    - name: Run all end to end tests on Windows
+      run: conda activate kedro-viz; make e2e-tests
+  unit_tests:
+    if: ${{ inputs.backend_change }} || ${{ inputs.ci_change }}
+    runs-on: ubuntu-latest
+    container:
+      image: cimg/python:${{ matrix.python_version }}-node
+    strategy:
+      matrix:
+        python_version:
+        - '3.9'
+        - '3.10'
+        - '3.11'
+    steps:
+#     # This item has no matching transformer
+#     - setup:
+    - name: Run Python tests
+      run: make pytest
+  win_unit_tests:
+    if: ${{ inputs.backend_change }} || ${{ inputs.ci_change }} && github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version:
+        - '3.9'
+        - '3.10'
+        - '3.11'
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/win_setup"
+      with:
+        python_version: "${{ matrix.python_version }}"
+    - name: Run Python tests on Windows
+      run: conda activate kedro-viz; make pytest
+  lint:
+    if: ${{ inputs.backend_change }} || ${{ inputs.ci_change }}
+    runs-on: ubuntu-latest
+    container:
+      image: cimg/python:${{ matrix.python_version }}-node
+    strategy:
+      matrix:
+        python_version:
+        - '3.9'
+        - '3.10'
+        - '3.11'
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/setup_python_env"
+    - name: Run secret scan
+      run: make secret-scan
+    - name: Run security scan
+      run: make security-scan
+    - name: Verify GraphQL schema is up to date
+      run: make schema-check
+    - name: Run Python formatters and linters
+      run: make format-check lint-check
+  all_circleci_checks_succeeded:
+    if: ${{ inputs.backend_change }} || ${{ inputs.ci_change }}
+    runs-on: ubuntu-latest
+    container:
+      image: python
+    needs:
+    - e2e_tests
+    - unit_tests
+    - lint
+    steps:
+    - name: Success!
+      run: echo "All checks passed"

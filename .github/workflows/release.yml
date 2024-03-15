@@ -1,0 +1,49 @@
+name: kedro-org/kedro-viz/release
+on:
+  workflow_dispatch:
+    inputs:
+      backend_change:
+        required: true
+      ci_change:
+        required: true
+      frontend_change:
+        required: true
+env:
+  AWS_REGION: xxxxst-2
+  CACHE_VERSION: xxxx
+  NPM_TOKEN: xxxx5775
+  SNYK_TOKEN: xxxxa727
+  TWINE_NON_INTERACTIVE: xxxx
+  TWINE_PASSWORD: xxxxi3Xc
+  TWINE_REPOSITORY_URL: xxxxacy/
+  TWINE_USERNAME: xxxxen__
+jobs:
+  release_to_npm:
+    if: # GitHub does not currently support regular expressions inside if conditions
+#         (github.ref == 'refs/tags//^v[0-9]+\.[0-9]+\.[0-9]+$/') && (github.ref != 'refs/heads//.*/')
+    runs-on: ubuntu-latest
+    container:
+      image: cimg/python:3.9-node
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/install_node_dependencies"
+    - uses: "./.github/actions/npm_build"
+    - name: Authenticate with registry
+      run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+    - name: Publish to npm
+      run: npm publish
+  release_to_pypi:
+    if: # GitHub does not currently support regular expressions inside if conditions
+#         (github.ref == 'refs/tags//^v[0-9]+\.[0-9]+\.[0-9]+$/') && (github.ref != 'refs/heads//.*/')
+    runs-on: ubuntu-latest
+    container:
+      image: cimg/python:3.9-node
+    steps:
+#     # This item has no matching transformer
+#     - setup:
+    - name: Make Python package
+      run: make package
+    - name: Install twine
+      run: python -m pip install -U twine
+    - name: Publish to PyPI
+      run: python -m twine upload package/dist/*
