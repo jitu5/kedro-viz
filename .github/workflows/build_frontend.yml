@@ -1,4 +1,4 @@
-name: kedro-org/kedro-viz/build_frontend
+name: build_frontend
 on:
   workflow_dispatch:
     inputs:
