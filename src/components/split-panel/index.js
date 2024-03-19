@@ -1,3 +1,3 @@
 import SplitPanel from './split-panel';
 
-export default SplitPanel;
+export default SplitPanel; 
