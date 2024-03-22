@@ -1,6 +1,8 @@
 name: win_setup_python_env
+description: GitHub Action to setup Python environment on Windows
 inputs:
   python_version:
+    description: Python version to use for the environment
     required: false
 runs:
   using: composite

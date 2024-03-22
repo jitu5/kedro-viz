@@ -1,4 +1,5 @@
 name: setup_cypress_requirements
+description: Setup Cypress requirements
 runs:
   using: composite
   steps:

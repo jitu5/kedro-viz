@@ -1,13 +1,16 @@
 name: build_frontend
 on:
+  push:
+    paths:
+      - '.github/**'
+    paths-ignore:
+      - 'package/**'
+  pull_request:
+    paths:
+      - '.github/**'
+    paths-ignore:
+      - 'package/**'
   workflow_dispatch:
-    inputs:
-      backend_change:
-        required: true
-      ci_change:
-        required: true
-      frontend_change:
-        required: true
 env:
   AWS_REGION: xxxxst-2
   CACHE_VERSION: xxxx
@@ -19,7 +22,6 @@ env:
   TWINE_USERNAME: xxxxen__
 jobs:
   javascript_lint_and_tests:
-    if: ${{ inputs.frontend_change }} || ${{ inputs.ci_change }}
     runs-on: ubuntu-latest
     container:
       image: cimg/python:3.9-node
@@ -41,13 +43,3 @@ jobs:
       run: npm run test:ci
     - name: Run Javascript end to end tests
       run: npm run cy:ci
-  all_circleci_checks_succeeded:
-    if: ${{ inputs.frontend_change }} || ${{ inputs.ci_change }}
-    runs-on: ubuntu-latest
-    container:
-      image: python
-    needs:
-    - javascript_lint_and_tests
-    steps:
-    - name: Success!
-      run: echo "All checks passed"

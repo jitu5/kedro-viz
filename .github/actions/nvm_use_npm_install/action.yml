@@ -1,4 +1,5 @@
 name: nvm_use_npm_install
+description: GitHub Action to use NVM and install Node dependencies
 runs:
   using: composite
   steps:

@@ -1,4 +1,5 @@
 name: setup_python_env
+description: Setup Python environment
 runs:
   using: composite
   steps:

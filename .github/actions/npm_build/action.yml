@@ -1,4 +1,5 @@
 name: npm_build
+description: Build React application using npm
 runs:
   using: composite
   steps:

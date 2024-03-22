@@ -1,4 +1,5 @@
 name: install_node_dependencies
+description: Install Node dependencies
 runs:
   using: composite
   steps:

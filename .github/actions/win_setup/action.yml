@@ -1,6 +1,8 @@
 name: win_setup
+description: This is a GitHub Action for setting up a Windows environment.
 inputs:
   python_version:
+    description: The version of Python to use.
     required: false
 runs:
   using: composite
