@@ -12,7 +12,7 @@ runs:
       choco install miniconda3 -y
       refreshenv
       C:\tools\miniconda3\Scripts\conda init powershell
-    shell: bash
+    shell: pwsh
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y
     shell: bash

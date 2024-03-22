@@ -7,6 +7,12 @@ inputs:
 runs:
   using: composite
   steps:
+  - name: Install and initialize Miniconda
+    run: |-
+      choco install miniconda3 -y
+      refreshenv
+      C:\tools\miniconda3\Scripts\conda init powershell
+    shell: pwsh  
   - uses: actions/checkout@v4.1.0
   - uses: "./.github/actions/win_setup_python_env"
     with:
