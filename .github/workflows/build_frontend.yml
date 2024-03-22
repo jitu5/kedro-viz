@@ -1,13 +1,9 @@
 name: build_frontend
 on:
   push:
-    paths:
-      - '.github/**'
     paths-ignore:
       - 'package/**'
   pull_request:
-    paths:
-      - '.github/**'
     paths-ignore:
       - 'package/**'
   workflow_dispatch:
