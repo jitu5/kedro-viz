@@ -12,15 +12,12 @@ runs:
     with:
       auto-update-conda: true
       python-version: ${{ inputs.python_version }}
-  # - name: Install and initialize Miniconda
-  #   run: |-
-  #     choco install miniconda3 -y
-  #     refreshenv
-  #     C:\tools\miniconda3\Scripts\conda init powershell
-  #   shell: pwsh
+  - name: Explicitly initialize conda
+    run: conda init bash
+    shell: bash      
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y
-    shell: bash -l {0}
+    shell: bash
   - name: Install Kedro-Viz dependencies
     run: |-
       conda activate kedro-viz
