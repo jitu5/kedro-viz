@@ -54,7 +54,7 @@ jobs:
       run: |
         conda activate kedro-viz
         make e2e-tests
-      shell: msys2 {0}
+      shell: bash -l {0}
   unit_tests:
     runs-on: ubuntu-latest
     container:
@@ -90,7 +90,7 @@ jobs:
       run: |
         conda activate kedro-viz
         make pytest
-      shell: msys2 {0}
+      shell: bash -l {0}
   lint:
     runs-on: ubuntu-latest
     container:
