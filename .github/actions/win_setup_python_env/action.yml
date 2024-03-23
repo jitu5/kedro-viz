@@ -13,8 +13,8 @@ runs:
       auto-update-conda: true
       python-version: ${{ inputs.python_version }}
   - name: Explicitly initialize conda
-    run: conda init bash
-    shell: bash      
+    run: conda init powershell
+    shell: pwsh      
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y
     shell: bash

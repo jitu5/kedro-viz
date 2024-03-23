@@ -51,8 +51,8 @@ jobs:
       with:
         python_version: "${{ matrix.python_version }}"
     - name: Explicitly initialize conda
-      run: conda init bash
-      shell: bash          
+      run: conda init powershell
+      shell: pwsh            
     - name: Run all end to end tests on Windows
       run: |
         conda activate kedro-viz
@@ -90,8 +90,8 @@ jobs:
       with:
         python_version: "${{ matrix.python_version }}"
     - name: Explicitly initialize conda
-      run: conda init bash
-      shell: bash           
+      run: conda init powershell
+      shell: pwsh           
     - name: Run Python tests on Windows
       run: |
         conda activate kedro-viz
