@@ -14,6 +14,7 @@ runs:
       python-version: ${{ inputs.python_version }}
   - name: Check base environmentttttttttttt
     run: |
+      echo '33333333333333333' |
       conda info |
       grep -i 'base environment'
     shell: bash
