@@ -12,7 +12,7 @@ runs:
     with:
       auto-update-conda: true
       python-version: ${{ inputs.python_version }}
-  - name: Check base environmentttttttttttttt
+  - name: Check base environmentttttttttttt
     run: |
       conda info |
       grep -i 'base environment'
