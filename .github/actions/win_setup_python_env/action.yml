@@ -12,6 +12,11 @@ runs:
     with:
       auto-update-conda: true
       python-version: ${{ inputs.python_version }}
+  - name: Check base environmentttttttttttttt
+    run: |
+      conda info |
+      grep -i 'base environment'
+    shell: bash
   - name: Explicitly initialize conda
     run: conda init bash
     shell: bash      
