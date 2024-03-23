@@ -19,13 +19,14 @@ runs:
       grep -i 'base environment'
     shell: bash
   - name: Explicitly initialize conda
-    run: conda init
+    run: conda init bash
     shell: bash      
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y
     shell: bash
   - name: Install Kedro-Viz dependencies
     run: |-
+      source /usr/share/miniconda/etc/profile.d/conda.sh
       conda activate kedro-viz
       pip install git+https://github.com/kedro-org/kedro@main
       pip install -r package/test_requirements.txt -U
