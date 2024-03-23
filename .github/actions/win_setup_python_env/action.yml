@@ -20,7 +20,7 @@ runs:
   #   shell: pwsh
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y
-    shell: bash
+    shell: bash -l {0}
   - name: Install Kedro-Viz dependencies
     run: |-
       conda activate kedro-viz
