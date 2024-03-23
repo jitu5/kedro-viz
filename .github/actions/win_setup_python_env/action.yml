@@ -7,12 +7,10 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Install and initialize Miniconda
-    run: |-
-      choco install miniconda3 -y
-      refreshenv
-      C:\tools\miniconda3\Scripts\conda init powershell
-    shell: pwsh
+  - name: Setup Python
+    uses: actions/setup-python@v2
+    with:
+      python-version: ${{ inputs.python_version }}
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y
     shell: bash
@@ -28,6 +26,8 @@ runs:
       python -V
       pip freeze
     shell: bash
-  - name: Install 'make' command
-    run: choco install make
-    shell: bash
+  - name: Setup MSYS2 and install 'make' command
+    uses: msys2/setup-msys2@v2
+    with:
+      update: true
+      install: make
