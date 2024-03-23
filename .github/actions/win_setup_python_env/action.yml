@@ -18,7 +18,7 @@ runs:
       grep -i 'base environment'
     shell: bash
   - name: Explicitly initialize conda
-    run: conda init bash
+    run: conda init
     shell: bash      
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y

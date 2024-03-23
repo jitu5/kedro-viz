@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 class DeployerConfiguration(BaseModel):
     """Credentials for Deployers."""
-    # test push
 
     platform: str
     endpoint: str
