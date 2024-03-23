@@ -3,11 +3,11 @@ on:
   push:
     paths:
       - 'package/**'
-      - '.circleci/.**'
+      - '.circleci/**'
   pull_request:
     paths:
       - 'package/**'
-      - '.circleci/.**'
+      - '.circleci/**'
   workflow_dispatch:
 env:
   AWS_REGION: xxxxst-2
