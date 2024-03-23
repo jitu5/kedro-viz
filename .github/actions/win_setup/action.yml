@@ -11,7 +11,10 @@ runs:
     uses: conda-incubator/setup-miniconda@v2
     with:
       auto-update-conda: true
-      python-version: ${{ inputs.python_version }}  
+      python-version: ${{ inputs.python_version }}
+  - name: Explicitly initialize conda
+    run: conda init bash
+    shell: bash           
   # - name: Install and initialize Miniconda
   #   run: |-
   #     choco install miniconda3 -y
