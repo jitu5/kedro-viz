@@ -48,10 +48,7 @@ jobs:
     - uses: actions/checkout@v4.1.0
     - uses: "./.github/actions/win_setup"
       with:
-        python_version: "${{ matrix.python_version }}"
-    - name: Explicitly initialize conda
-      run: conda init bash
-      shell: bash           
+        python_version: "${{ matrix.python_version }}"          
     - name: Run all end to end tests on Windows
       run: conda activate kedro-viz; make e2e-tests
   unit_tests:
@@ -81,10 +78,7 @@ jobs:
     - uses: actions/checkout@v4.1.0
     - uses: "./.github/actions/win_setup"
       with:
-        python_version: "${{ matrix.python_version }}"
-    - name: Explicitly initialize conda
-      run: conda init bash
-      shell: bash           
+        python_version: "${{ matrix.python_version }}"         
     - name: Run Python tests on Windows
       run: conda activate kedro-viz; make pytest
   lint:
