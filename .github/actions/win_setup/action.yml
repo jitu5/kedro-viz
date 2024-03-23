@@ -8,11 +8,16 @@ runs:
   using: composite
   steps:
   - name: Install and initialize Miniconda
-    run: |-
-      choco install miniconda3 -y
-      refreshenv
-      C:\tools\miniconda3\Scripts\conda init powershell
-    shell: pwsh  
+    uses: conda-incubator/setup-miniconda@v2
+    with:
+      auto-update-conda: true
+      python-version: ${{ inputs.python_version }}  
+  # - name: Install and initialize Miniconda
+  #   run: |-
+  #     choco install miniconda3 -y
+  #     refreshenv
+  #     C:\tools\miniconda3\Scripts\conda init powershell
+  #   shell: pwsh  
   - uses: actions/checkout@v4.1.0
   - uses: "./.github/actions/win_setup_python_env"
     with:

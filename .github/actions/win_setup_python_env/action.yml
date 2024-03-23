@@ -7,10 +7,17 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Setup Python
-    uses: actions/setup-python@v2
+  - name: Install and initialize Miniconda
+    uses: conda-incubator/setup-miniconda@v2
     with:
+      auto-update-conda: true
       python-version: ${{ inputs.python_version }}
+  # - name: Install and initialize Miniconda
+  #   run: |-
+  #     choco install miniconda3 -y
+  #     refreshenv
+  #     C:\tools\miniconda3\Scripts\conda init powershell
+  #   shell: pwsh
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y
     shell: bash
