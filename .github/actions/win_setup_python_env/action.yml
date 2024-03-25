@@ -12,32 +12,26 @@ runs:
     with:
       auto-update-conda: true
       python-version: ${{ inputs.python_version }}
-  - name: Check base environmentttttttttttt
-    run: |
-      echo '33333333333333333' |
-      conda info |
-      grep -i 'base environment'
-    shell: bash
   # - name: Explicitly initialize conda
   #   run: conda init bash
   #   shell: bash      
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y
-    shell: bash
+    shell: pwsh
   - name: Install Kedro-Viz dependencies
     run: |-
       source /usr/share/miniconda/etc/profile.d/conda.sh
-      conda init bash
+      conda init pwsh
       conda activate kedro-viz
       pip install git+https://github.com/kedro-org/kedro@main
       pip install -r package/test_requirements.txt -U
-    shell: bash
+    shell: pwsh
   - name: Echo package versions
     run: |-
       conda activate kedro-viz
       python -V
       pip freeze
-    shell: bash
+    shell: pwsh
   - name: Setup MSYS2 and install 'make' command
     uses: msys2/setup-msys2@v2
     with:
