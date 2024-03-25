@@ -7,3 +7,4 @@ README.md
 LAYOUT_ENGINE.md
 src/utils/random-utils.js
 src/components/update-reminder/update-reminder-content.js
+cypress/fixtures/graphql/compareThreeRuns.json 
