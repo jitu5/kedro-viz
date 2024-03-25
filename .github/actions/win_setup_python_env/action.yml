@@ -11,16 +11,12 @@ runs:
     uses: conda-incubator/setup-miniconda@v2
     with:
       auto-update-conda: true
-      python-version: ${{ inputs.python_version }}
-  # - name: Explicitly initialize conda
-  #   run: conda init bash
-  #   shell: bash      
+      python-version: ${{ inputs.python_version }}    
   - name: Create 'kedro-viz' conda environment
     run: conda create --name kedro-viz python=${{ inputs.python_version }} -y
     shell: pwsh
   - name: Install Kedro-Viz dependencies
     run: |-
-      conda init pwsh
       conda activate kedro-viz
       pip install git+https://github.com/kedro-org/kedro@main
       pip install -r package/test_requirements.txt -U
