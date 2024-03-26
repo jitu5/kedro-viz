@@ -27,24 +27,7 @@ jobs:
     uses: ./.github/workflows/e2e-tests.yml
     with:
       os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}
-  # e2e_tests:
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: cimg/python:${{ matrix.python_version }}-node
-  #   strategy:
-  #     matrix:
-  #       python_version:
-  #       - '3.9'
-  #       - '3.10'
-  #       - '3.11'
-  #   steps:
-  #   - uses: actions/checkout@v4.1.0
-  #   - uses: "./.github/actions/setup_python_env"
-  #   - uses: "./.github/actions/install_node_dependencies"
-  #   - uses: "./.github/actions/npm_build"
-  #   - name: Run all end to end tests
-  #     run: make e2e-tests      
+      python-version: ${{ matrix.python-version }}    
   # win_e2e_tests:
   #   if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo'
   #   runs-on: windows-latest
@@ -63,23 +46,6 @@ jobs:
   #     run: |
   #       conda activate kedro-viz
   #       make e2e-tests
-  # unit_tests:
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: cimg/python:${{ matrix.python_version }}-node
-  #   strategy:
-  #     matrix:
-  #       python_version:
-  #       - '3.9'
-  #       - '3.10'
-  #       - '3.11'
-  #   steps:
-  #   - uses: actions/checkout@v4.1.0
-  #   - uses: "./.github/actions/setup_python_env"
-  #   - uses: "./.github/actions/install_node_dependencies"
-  #   - uses: "./.github/actions/npm_build"
-  #   - name: Run Python tests
-  #     run: make pytest
   unit_tests:
     strategy:
       matrix:
@@ -108,23 +74,32 @@ jobs:
   #       conda activate kedro-viz
   #       make pytest
   lint:
-    runs-on: ubuntu-latest
-    container:
-      image: cimg/python:${{ matrix.python_version }}-node
     strategy:
       matrix:
-        python_version:
-        - '3.9'
-        - '3.10'
-        - '3.11'
-    steps:
-    - uses: actions/checkout@v4.1.0
-    - uses: "./.github/actions/setup_python_env"
-    - name: Run secret scan
-      run: make secret-scan
-    - name: Run security scan
-      run: make security-scan
-    - name: Verify GraphQL schema is up to date
-      run: make schema-check
-    - name: Run Python formatters and linters
-      run: make format-check lint-check
+        os: [ ubuntu-latest ]
+        python-version: [ "3.9", "3.10", "3.11" ]
+    uses: ./.github/workflows/lint.yml
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: cimg/python:${{ matrix.python_version }}-node
+  #   strategy:
+  #     matrix:
+  #       python_version:
+  #       - '3.9'
+  #       - '3.10'
+  #       - '3.11'
+  #   steps:
+  #   - uses: actions/checkout@v4.1.0
+  #   - uses: "./.github/actions/setup_python_env"
+  #   - name: Run secret scan
+  #     run: make secret-scan
+  #   - name: Run security scan
+  #     run: make security-scan
+  #   - name: Verify GraphQL schema is up to date
+  #     run: make schema-check
+  #   - name: Run Python formatters and linters
+  #     run: make format-check lint-check
