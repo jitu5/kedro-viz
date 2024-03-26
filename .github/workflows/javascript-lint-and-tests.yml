@@ -1,0 +1,51 @@
+name: Run javascript linters and tests on Kedro-Viz
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        type: string
+      python-version:
+        type: string
+jobs:
+    javascript_lint_and_tests:
+        runs-on: ${{ inputs.os }}
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4.1.0
+
+          - name: Set up Python ${{inputs.python-version}}
+            uses: actions/setup-python@v5
+            with:
+              python-version: ${{inputs.python-version}}          
+
+          - name: Cache python packages for Linux
+            if: inputs.os == 'ubuntu-latest'
+            uses: actions/cache@v4
+            with:
+              path: ~/.cache/pip
+              key: ${{inputs.os}}-python-${{inputs.python-version}}            
+
+          - uses: "./.github/actions/setup_python_env"
+
+          - uses: "./.github/actions/install_node_dependencies"
+
+          - uses: "./.github/actions/setup_cypress_requirements"
+
+          - name: Test lib transpilation
+            run: npm run lib
+
+          - name: Test JS library imports
+            run: |-
+              npm run lib-test:setup
+              cd tools/test-lib/react-app
+              npm run test:ci
+
+          - name: Run Eslint
+            run: npm run lint
+
+          - name: Run JavaScript tests
+            run: npm run test:ci
+            
+          - name: Run Javascript end to end tests
+            run: npm run cy:ci      
