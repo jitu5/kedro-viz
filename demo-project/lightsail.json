@@ -1,15 +1,15 @@
 {
-  "serviceName": "kedro-viz-live-demo",
+  "serviceName": "jitu5-kedro-viz",
   "containers": {
-    "kedro-viz-live-demo": {
-      "image": "public.ecr.aws/g0x0s3o2/kedro-viz-live-demo:8.0.1",
+    "jitu5-kedro-viz": {
+      "image": "public.ecr.aws/g9b0c0v4/jitu5-kedro-viz:8.0.1",
       "ports": {
         "4141": "HTTP"
       }
     }
   },
   "publicEndpoint": {
-    "containerName": "kedro-viz-live-demo",
+    "containerName": "jitu5-kedro-viz",
     "containerPort": 4141
   }
 }
