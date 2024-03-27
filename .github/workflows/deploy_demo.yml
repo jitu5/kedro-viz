@@ -17,6 +17,7 @@ jobs:
         cd demo-project
         echo "AWS_ECR_URL=public.ecr.aws/g0x0s3o2/kedro-viz-live-demo" >> $GITHUB_ENV
         echo "KEDRO_VIZ_VERSION=$(cat .version)" >> $GITHUB_ENV
+        echo "cd demo-project" >> $GITHUB_ENV
 
         # echo "AWS_ECR_URL=public.ecr.aws/g0x0s3o2/kedro-viz-live-demo" >> $BASH_ENV
         # echo "KEDRO_VIZ_VERSION=$(cat .version)" >> $BASH_ENV
