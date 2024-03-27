@@ -1,4 +1,4 @@
-name: build_frontend
+name: Build frontend
 on:
   push:
     paths-ignore:
