@@ -25,7 +25,7 @@ jobs:
       run: pip3 install awscli
     - name: Build demo container image
       run: |-
-        cd demo-project
+        pwd
         echo "kedro_viz==$KEDRO_VIZ_VERSION" >> src/docker_requirements.txt
         docker build -t $AWS_ECR_URL:$KEDRO_VIZ_VERSION .
         aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
