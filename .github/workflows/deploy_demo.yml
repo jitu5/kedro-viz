@@ -1,34 +1,17 @@
 name: deploy_demo
 on:
   workflow_dispatch:
-    inputs:
-      backend_change:
-        required: true
-      ci_change:
-        required: true
-      frontend_change:
-        required: true
-env:
-  AWS_REGION: xxxxst-2
-  CACHE_VERSION: xxxx
-  NPM_TOKEN: xxxx5775
-  SNYK_TOKEN: xxxxa727
-  TWINE_NON_INTERACTIVE: xxxx
-  TWINE_PASSWORD: xxxxi3Xc
-  TWINE_REPOSITORY_URL: xxxxacy/
-  TWINE_USERNAME: xxxxen__
+  push:
+    branches:
+      - demo  
 jobs:
   deploy_demo:
-    if: github.ref == 'refs/heads/demo'
     runs-on: ubuntu-latest
-    container:
-      image: cimg/python:3.9-node
     env:
-      AWS_ACCESS_KEY_ID:
-      AWS_SECRET_ACCESS_KEY:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
     - uses: actions/checkout@v4.1.0
-#     # 'setup_remote_docker' was not transformed because there is no suitable equivalent in GitHub Actions
     - name: Setup environment
       run: |-
         cd demo-project

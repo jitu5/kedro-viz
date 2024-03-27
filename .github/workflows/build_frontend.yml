@@ -7,15 +7,6 @@ on:
     paths-ignore:
       - 'package/**'
   workflow_dispatch:
-env:
-  AWS_REGION: xxxxst-2
-  CACHE_VERSION: xxxx
-  NPM_TOKEN: xxxx5775
-  SNYK_TOKEN: xxxxa727
-  TWINE_NON_INTERACTIVE: xxxx
-  TWINE_PASSWORD: xxxxi3Xc
-  TWINE_REPOSITORY_URL: xxxxacy/
-  TWINE_USERNAME: xxxxen__
 jobs:
   javascript_lint_and_tests:
     strategy:
@@ -26,25 +17,3 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}   
-  # javascript_lint_and_tests:
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: cimg/python:3.9-node
-  #   steps:
-  #   - uses: actions/checkout@v4.1.0
-  #   - uses: "./.github/actions/setup_python_env"
-  #   - uses: "./.github/actions/install_node_dependencies"
-  #   - uses: "./.github/actions/setup_cypress_requirements"
-  #   - name: Test lib transpilation
-  #     run: npm run lib
-  #   - name: Test JS library imports
-  #     run: |-
-  #       npm run lib-test:setup
-  #       cd tools/test-lib/react-app
-  #       npm run test:ci
-  #   - name: Run Eslint
-  #     run: npm run lint
-  #   - name: Run JavaScript tests
-  #     run: npm run test:ci
-  #   - name: Run Javascript end to end tests
-  #     run: npm run cy:ci

@@ -9,15 +9,6 @@ on:
       - 'package/**'
       - '.circleci/**'
   workflow_dispatch:
-env:
-  AWS_REGION: xxxxst-2
-  CACHE_VERSION: xxxx
-  NPM_TOKEN: xxxx5775
-  SNYK_TOKEN: xxxxa727
-  TWINE_NON_INTERACTIVE: xxxx
-  TWINE_PASSWORD: xxxxi3Xc
-  TWINE_REPOSITORY_URL: xxxxacy/
-  TWINE_USERNAME: xxxxen__
 jobs:
   e2e_tests:
     strategy:
@@ -28,24 +19,7 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}    
-  # win_e2e_tests:
-  #   if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo'
-  #   runs-on: windows-latest
-  #   strategy:
-  #     matrix:
-  #       python_version:
-  #       - '3.9'
-  #       - '3.10'
-  #       - '3.11'
-  #   steps:
-  #   - uses: actions/checkout@v4.1.0
-  #   - uses: "./.github/actions/win_setup"
-  #     with:
-  #       python_version: "${{ matrix.python_version }}"                
-  #   - name: Run all end to end tests on Windows
-  #     run: |
-  #       conda activate kedro-viz
-  #       make e2e-tests
+
   unit_tests:
     strategy:
       matrix:
@@ -55,24 +29,7 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}      
-  # win_unit_tests:
-  #   if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo'
-  #   runs-on: windows-latest
-  #   strategy:
-  #     matrix:
-  #       python_version:
-  #       - '3.9'
-  #       - '3.10'
-  #       - '3.11'
-  #   steps:
-  #   - uses: actions/checkout@v4.1.0
-  #   - uses: "./.github/actions/win_setup"
-  #     with:
-  #       python_version: "${{ matrix.python_version }}"                
-  #   - name: Run Python tests on Windows
-  #     run: |
-  #       conda activate kedro-viz
-  #       make pytest
+
   lint:
     strategy:
       matrix:
@@ -82,24 +39,3 @@ jobs:
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: cimg/python:${{ matrix.python_version }}-node
-  #   strategy:
-  #     matrix:
-  #       python_version:
-  #       - '3.9'
-  #       - '3.10'
-  #       - '3.11'
-  #   steps:
-  #   - uses: actions/checkout@v4.1.0
-  #   - uses: "./.github/actions/setup_python_env"
-  #   - name: Run secret scan
-  #     run: make secret-scan
-  #   - name: Run security scan
-  #     run: make security-scan
-  #   - name: Verify GraphQL schema is up to date
-  #     run: make schema-check
-  #   - name: Run Python formatters and linters
-  #     run: make format-check lint-check
