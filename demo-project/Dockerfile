@@ -1,11 +1,9 @@
 
-FROM python:3.8
+FROM python:3.9
 
 WORKDIR /code
 
 COPY . /code
-
-RUN python --version
 
 RUN pip install --no-cache-dir --upgrade -r /code/src/docker_requirements.txt
 
