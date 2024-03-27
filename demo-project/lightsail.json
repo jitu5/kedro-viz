@@ -2,7 +2,7 @@
   "serviceName": "jitu5-kedro-viz",
   "containers": {
     "jitu5-kedro-viz": {
-      "image": "public.ecr.aws/g9b0c0v4/jitu5-kedro-viz:8.0.1",
+      "image": "public.ecr.aws/h1b3x4b6/jitu5-kedro-viz:8.0.1",
       "ports": {
         "4141": "HTTP"
       }
