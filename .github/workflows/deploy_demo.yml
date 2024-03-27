@@ -36,7 +36,7 @@ jobs:
         docker push $AWS_ECR_URL:$KEDRO_VIZ_VERSION
     - name: Create a new lightsail deployment
       run: |-
-        pwd
+        cd demo-project
         # install lightsail cli
         # run https://docs.aws.amazon.com/cli/latest/reference/lightsail/create-container-service-deployment.html#create-container-service-deployment
         aws lightsail create-container-service-deployment --region eu-west-2 --cli-input-json file://./lightsail.json
