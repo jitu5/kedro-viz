@@ -15,12 +15,9 @@ jobs:
     - name: Setup environment
       run: |-
         cd demo-project
-        echo "AWS_ECR_URL=public.ecr.aws/g0x0s3o2/kedro-viz-live-demo" >> $GITHUB_ENV
+        echo "AWS_ECR_URL=565266070854.dkr.ecr.us-east-1.amazonaws.com/jitu5-kedro-viz" >> $GITHUB_ENV
         echo "KEDRO_VIZ_VERSION=$(cat .version)" >> $GITHUB_ENV
 
-        # echo "AWS_ECR_URL=public.ecr.aws/g0x0s3o2/kedro-viz-live-demo" >> $BASH_ENV
-        # echo "KEDRO_VIZ_VERSION=$(cat .version)" >> $BASH_ENV
-        # echo "cd demo-project" >> $BASH_ENV
     - name: Install AWS CLI
       run: pip3 install awscli
     - name: Build demo container image
