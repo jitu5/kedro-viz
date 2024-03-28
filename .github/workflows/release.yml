@@ -9,7 +9,7 @@ on:
 env:
   AWS_REGION: xxxxst-2
   CACHE_VERSION: xxxx
-  NPM_TOKEN: xxxx5775
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   SNYK_TOKEN: xxxxa727
   TWINE_NON_INTERACTIVE: xxxx
   TWINE_PASSWORD: xxxxi3Xc
@@ -41,39 +41,39 @@ jobs:
     - name: Publish to npm
       run: npm publish
 
-  release_to_pypi:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.1.0
+  # release_to_pypi:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4.1.0
 
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.9          
+  #     - name: Set up Python 3.9
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: 3.9          
 
-      - name: Cache python packages for Linux
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ubuntu-latest-python-3.9
+  #     - name: Cache python packages for Linux
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: ~/.cache/pip
+  #         key: ubuntu-latest-python-3.9
 
-      - name: Setup Python environment
-        uses: "./.github/actions/setup_python_env"
+  #     - name: Setup Python environment
+  #       uses: "./.github/actions/setup_python_env"
 
-      - name: Install Node dependencies
-        uses: "./.github/actions/install_node_dependencies"
+  #     - name: Install Node dependencies
+  #       uses: "./.github/actions/install_node_dependencies"
       
-      - name: Build React application
-        run: |-
-          node -v
-          make build
+  #     - name: Build React application
+  #       run: |-
+  #         node -v
+  #         make build
 
-      - name: Make Python package
-        run: make package
+  #     - name: Make Python package
+  #       run: make package
 
-      - name: Install twine
-        run: python -m pip install -U twine
+  #     - name: Install twine
+  #       run: python -m pip install -U twine
 
-      - name: Publish to PyPI
-        run: python -m twine upload package/dist/*
+  #     - name: Publish to PyPI
+  #       run: python -m twine upload package/dist/*
