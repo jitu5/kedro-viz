@@ -4,42 +4,5 @@ on:
   - cron: 0 1 * * *
   workflow_dispatch:
 jobs:
-  e2e_tests:
-    strategy:
-      matrix:
-        os: [ windows-latest, ubuntu-latest ]
-        python-version: [ "3.9", "3.10", "3.11" ]
-    uses: ./.github/workflows/e2e-tests.yml
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }} 
-
-  unit_tests:
-    strategy:
-      matrix:
-        os: [ windows-latest, ubuntu-latest ]
-        python-version: [ "3.9", "3.10", "3.11" ]
-    uses: ./.github/workflows/unit-tests.yml
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}  
-
-  lint:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        python-version: [ "3.9", "3.10", "3.11" ]
-    uses: ./.github/workflows/lint.yml
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}  
-      
-  javascript_lint_and_tests:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        python-version: [ "3.9" ]
-    uses: ./.github/workflows/javascript-lint-and-tests.yml
-    with:
-      os: ${{ matrix.os }}
-      python-version: ${{ matrix.python-version }}  
+  all-checks:
+    uses: ./.github/workflows/all-checks.yml
