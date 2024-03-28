@@ -27,7 +27,8 @@ jobs:
       with:
         python-version: 3.9    
 
-    - uses: "./.github/actions/install_node_dependencies"
+    - name: Install Node dependencies
+      uses: "./.github/actions/install_node_dependencies"
 
     - name: Build React application
       run: |-
@@ -57,8 +58,11 @@ jobs:
           path: ~/.cache/pip
           key: ubuntu-latest-python-3.9
 
-      - uses: "./.github/actions/setup_python_env"
-      - uses: "./.github/actions/install_node_dependencies"
+      - name: Setup Python environment
+        uses: "./.github/actions/setup_python_env"
+
+      - name: Install Node dependencies
+        uses: "./.github/actions/install_node_dependencies"
       
       - name: Build React application
         run: |-

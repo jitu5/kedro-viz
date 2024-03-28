@@ -26,11 +26,14 @@ jobs:
               path: ~/.cache/pip
               key: ${{inputs.os}}-python-${{inputs.python-version}}            
 
-          - uses: "./.github/actions/setup_python_env"
+          - name: Setup Python environment
+            uses: "./.github/actions/setup_python_env"
 
-          - uses: "./.github/actions/install_node_dependencies"
+          - name: Install Node dependencies
+            uses: "./.github/actions/install_node_dependencies"
 
-          - uses: "./.github/actions/setup_cypress_requirements"
+          - name: Setup Cypress requirements
+            uses: "./.github/actions/setup_cypress_requirements"
 
           - name: Test lib transpilation
             run: npm run lib

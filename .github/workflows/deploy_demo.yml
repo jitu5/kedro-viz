@@ -11,7 +11,9 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
-    - uses: actions/checkout@v4.1.0
+    - name: Checkout code
+      uses: actions/checkout@v4.1.0
+
     - name: Setup environment
       run: |-
         cd demo-project
@@ -20,6 +22,7 @@ jobs:
 
     - name: Install AWS CLI
       run: pip3 install awscli
+
     - name: Build demo container image
       run: |-
         cd demo-project
@@ -27,6 +30,7 @@ jobs:
         docker build -t $AWS_ECR_URL:$KEDRO_VIZ_VERSION .
         aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
         docker push $AWS_ECR_URL:$KEDRO_VIZ_VERSION
+
     - name: Create a new lightsail deployment
       run: |-
         cd demo-project

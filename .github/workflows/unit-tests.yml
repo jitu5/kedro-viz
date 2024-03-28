@@ -34,8 +34,11 @@ jobs:
             path: ~\AppData\Local\pip\Cache
             key: ${{inputs.os}}-python-${{inputs.python-version}}
 
-        - uses: "./.github/actions/setup_python_env"
-        - uses: "./.github/actions/install_node_dependencies"
+        - name: Setup Python environment
+          uses: "./.github/actions/setup_python_env"
+  
+        - name: Install Node dependencies
+          uses: "./.github/actions/install_node_dependencies"
 
         - name: Build React application
           run: |-
