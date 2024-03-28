@@ -36,6 +36,11 @@ jobs:
 
         - uses: "./.github/actions/setup_python_env"
         - uses: "./.github/actions/install_node_dependencies"
-        - uses: "./.github/actions/npm_build"
+        
+        - name: Build React application
+          run: |-
+            node -v
+            make build
+            
         - name: Run Python tests
           run: make e2e-tests 
