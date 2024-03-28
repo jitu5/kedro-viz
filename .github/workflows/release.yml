@@ -16,29 +16,29 @@ env:
   TWINE_REPOSITORY_URL: ${{ secrets.TWINE_REPOSITORY_URL }}
   TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
 jobs:
-  release_to_npm:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.1.0  
+  # release_to_npm:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4.1.0  
 
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 16.13.2
-        registry-url: 'https://registry.npmjs.org'
+  #   - uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 16.13.2
+  #       registry-url: 'https://registry.npmjs.org'
     
-    - name: Install Node dependencies    
-      run: npm ci
+  #   - name: Install Node dependencies    
+  #     run: npm ci
 
-    - name: Build React application
-      run: |-
-        node -v
-        make build
+  #   - name: Build React application
+  #     run: |-
+  #       node -v
+  #       make build
     
-    - name: Publish to npm
-      run: npm publish --access=public
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  #   - name: Publish to npm
+  #     run: npm publish --access=public
+  #     env:
+  #       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   release_to_pypi:
     runs-on: ubuntu-latest
