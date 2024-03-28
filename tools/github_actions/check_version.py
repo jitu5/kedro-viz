@@ -16,7 +16,7 @@ def get_package_version(base_path, package_path):
 def is_package_version_valid(pypi_endpoint, package_name, package_version):
     print(f"Check if {package_name} {package_version} is on pypi")
     response = requests.get(pypi_endpoint, timeout=10)
-    if response.status_code == 401:
+    if response.status_code != 404:
         # Version doesn't exist on Pypi - do release
         print(f"Starting the release of {package_name} {package_version}")
         return True
