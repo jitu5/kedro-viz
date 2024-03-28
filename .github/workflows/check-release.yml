@@ -63,4 +63,4 @@ jobs:
         body_path: release_body.txt
         draft: false
         prerelease: false
-        token: ${{ secrets.GH_TAGGING_TOKEN }}
+        token: ${{ secrets.GH_TOKEN }}
