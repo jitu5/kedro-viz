@@ -22,36 +22,21 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.0
 
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.9    
-
-    # - uses: actions/setup-node@v4
+    # - name: Set up Python 3.9
+    #   uses: actions/setup-python@v5
     #   with:
-    #     node-version: 16.13.2
-    #     registry-url: 'https://registry.npmjs.org'
-    # - run: npm ci
+    #     python-version: 3.9    
 
-    - name: Install Node dependencies
-      uses: "./.github/actions/install_node_dependencies"
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 16.13.2
+        registry-url: 'https://registry.npmjs.org'
+    - run: npm ci
 
     - name: Build React application
       run: |-
         node -v
         make build
-
-    # - name: Authenticate with registry
-    #   run: |
-    #     mkdir -p ~/repo/
-    #     echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
-
-    # - name: Authenticate with registry
-    #   run: |
-    #     # echo "registry=https://registry.npmjs.org/" >> .npmrc
-    #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
-
-    # Setup .npmrc file to publish to npm   
     
     - name: Publish to npm
       run: npm publish --access=public
