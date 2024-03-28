@@ -9,9 +9,9 @@ on:
 env:
   AWS_REGION: xxxxst-2
   CACHE_VERSION: xxxx
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   SNYK_TOKEN: xxxxa727
   TWINE_NON_INTERACTIVE: true
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
   TWINE_REPOSITORY_URL: ${{ secrets.TWINE_REPOSITORY_URL }}
   TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
