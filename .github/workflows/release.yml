@@ -35,10 +35,15 @@ jobs:
         node -v
         make build
 
+    # - name: Authenticate with registry
+    #   run: |
+    #     mkdir -p ~/repo/
+    #     echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+
     - name: Authenticate with registry
       run: |
-        mkdir -p ~/repo/
-        echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+        # echo "registry=https://registry.npmjs.org/" >> .npmrc
+        echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
     
     - name: Publish to npm
       run: npm publish
