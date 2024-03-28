@@ -1,13 +1,6 @@
-name: release
+name: Release
 on:
   workflow_dispatch:
-    inputs:
-      backend_change:
-        required: true
-      ci_change:
-        required: true
-      frontend_change:
-        required: true
 env:
   AWS_REGION: xxxxst-2
   CACHE_VERSION: xxxx

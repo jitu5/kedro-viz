@@ -1,4 +1,4 @@
-name: daily
+name: Daily all checks
 on:
   schedule:
   - cron: 0 1 * * *
