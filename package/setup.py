@@ -5,7 +5,7 @@ from os import path
 
 from setuptools import find_packages, setup
 
-name = "kedro-viz"
+name = "kedro-vizz"
 here = path.abspath(path.dirname(__file__))
 
 
@@ -35,7 +35,7 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     license="Apache Software License (Apache 2.0)",
-    url="https://github.com/kedro-org/kedro-viz",
+    url="https://github.com/jitu5/kedro-viz",
     python_requires=">=3.9",
     install_requires=requires,
     keywords="pipelines, machine learning, data pipelines, data science, data engineering, visualisation",
