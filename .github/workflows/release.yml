@@ -27,8 +27,14 @@ jobs:
       with:
         python-version: 3.9    
 
-    - name: Install Node dependencies
-      uses: "./.github/actions/install_node_dependencies"
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 16.13.2
+        registry-url: 'https://registry.npmjs.org'
+    - run: npm ci
+             
+    # - name: Install Node dependencies
+    #   uses: "./.github/actions/install_node_dependencies"
 
     - name: Build React application
       run: |-
@@ -45,12 +51,7 @@ jobs:
     #     # echo "registry=https://registry.npmjs.org/" >> .npmrc
     #     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
 
-    # Setup .npmrc file to publish to npm
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 16.13.2
-        registry-url: 'https://registry.npmjs.org'
-    - run: npm ci    
+    # Setup .npmrc file to publish to npm   
     
     - name: Publish to npm
       run: npm publish
