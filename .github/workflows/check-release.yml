@@ -44,7 +44,6 @@ jobs:
   prepare-release:
     needs: [check-version, test-kedro-viz]
     if: |
-      always() &&
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled') &&
       needs.check-version.outputs.new_release == 'true'
