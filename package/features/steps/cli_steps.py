@@ -133,25 +133,25 @@ def exec_viz_command(context):
     )
 
 
-# @then("kedro-viz should start successfully")
-# def check_kedroviz_up(context):
-#     """Check that Kedro-Viz is up and responding to requests."""
-#     max_duration = 30  # 30 seconds
-#     end_by = time() + max_duration
+@then("kedro-viz should start successfully")
+def check_kedroviz_up(context):
+    """Check that Kedro-Viz is up and responding to requests."""
+    max_duration = 30  # 30 seconds
+    end_by = time() + max_duration
 
-#     while time() < end_by:
-#         try:
-#             data_json = requests.get("http://localhost:4141/api/main").json()
-#         except Exception:
-#             sleep(2.0)
-#             continue
-#         else:
-#             break
+    while time() < end_by:
+        try:
+            data_json = requests.get("http://localhost:4141/api/main").json()
+        except Exception:
+            sleep(2.0)
+            continue
+        else:
+            break
 
-#     try:
-#         assert context.result.poll() is None
-#         assert (
-#             "X_test" == sorted(data_json["nodes"], key=lambda i: i["name"])[0]["name"]
-#         )
-#     finally:
-#         context.result.terminate()
+    try:
+        assert context.result.poll() is None
+        assert (
+            "X_test" == sorted(data_json["nodes"], key=lambda i: i["name"])[0]["name"]
+        )
+    finally:
+        context.result.terminate()
