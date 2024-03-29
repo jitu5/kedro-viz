@@ -73,24 +73,24 @@ jobs:
         prerelease: false
         token: ${{ secrets.GH_TAGGING_TOKEN }}
 
-  # release:
-  #   needs: [check-version, test-kedro-viz, prepare-release]
-  #   if: |
-  #     !contains(needs.*.result, 'failure') &&
-  #     !contains(needs.*.result, 'cancelled') &&
-  #     needs.check-version.outputs.new_release == 'true'
-  #   uses: ./.github/workflows/release.yml   
-
   release:
     needs: [check-version, test-kedro-viz, prepare-release]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check tag format
-        run: echo "${{ github.ref }}" | grep -q -E '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$'
-        shell: bash
-      - name: Run release
-        if: |
-          !contains(needs.*.result, 'failure') &&
-          !contains(needs.*.result, 'cancelled') &&
-          needs.check-version.outputs.new_release == 'true'
-        uses: ./.github/workflows/release.yml  
+    if: |
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled') &&
+      needs.check-version.outputs.new_release == 'true'
+    uses: ./.github/workflows/release.yml   
+
+  # release:
+  #   needs: [check-version, test-kedro-viz, prepare-release]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check tag format
+  #       run: echo "${{ github.ref }}" | grep -q -E '^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$'
+  #       shell: bash
+  #     - name: Run release
+  #       if: |
+  #         !contains(needs.*.result, 'failure') &&
+  #         !contains(needs.*.result, 'cancelled') &&
+  #         needs.check-version.outputs.new_release == 'true'
+  #       uses: ./.github/workflows/release.yml  
