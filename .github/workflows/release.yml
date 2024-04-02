@@ -3,9 +3,9 @@ on:
   workflow_call:
   workflow_dispatch:
 env:
-  AWS_REGION: xxxxst-2
-  CACHE_VERSION: xxxx
-  SNYK_TOKEN: xxxxa727
+  # AWS_REGION: xxxxst-2
+  # CACHE_VERSION: xxxx
+  # SNYK_TOKEN: xxxxa727
   TWINE_NON_INTERACTIVE: true
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
