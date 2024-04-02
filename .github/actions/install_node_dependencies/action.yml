@@ -1,0 +1,26 @@
+name: install_node_dependencies
+description: Install Node dependencies
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4.0.0
+      with:
+        node-version: 16.13.2
+        # Sets up the Node environment with the specified version.
+
+    - id: npm-cache-dir
+      run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+      shell: bash
+      # Retrieves the cache directory path for npm and stores it in the $GITHUB_OUTPUT environment variable.
+
+    - uses: actions/cache@v3.3.2
+      with:
+        path: "${{ steps.npm-cache-dir.outputs.dir }}"
+        key: "${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}"
+        restore-keys: "${{ runner.os }}-node-"
+      # Caches the Node dependencies using the specified cache key and restore keys.
+
+    - run: npm ci
+      shell: bash
+      # Installs the Node dependencies using the npm ci command.
