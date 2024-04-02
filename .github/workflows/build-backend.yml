@@ -3,11 +3,11 @@ on:
   push:
     paths:
       - 'package/**'
-      - '.circleci/**'
+      - '.github/**'
   pull_request:
     paths:
       - 'package/**'
-      - '.circleci/**'
+      - '.github/**'
   workflow_dispatch:
 jobs:
   e2e_tests:
