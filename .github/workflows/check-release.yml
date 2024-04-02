@@ -72,11 +72,3 @@ jobs:
         draft: false
         prerelease: false
         token: ${{ secrets.GH_TAGGING_TOKEN }}
-
-  release:
-    needs: [check-version, test-kedro-viz, prepare-release]
-    if: |
-      !contains(needs.*.result, 'failure') &&
-      !contains(needs.*.result, 'cancelled') &&
-      needs.check-version.outputs.new_release == 'true'
-    uses: ./.github/workflows/release.yml
