@@ -13,7 +13,7 @@ jobs:
         if: inputs.os == 'ubuntu-latest' || ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo') && inputs.os == 'windows-latest')
         steps:
         - name: Checkout code
-          uses: actions/checkout@v4.1.0
+          uses: actions/checkout@v4
 
         - name: Set up Python ${{inputs.python-version}}
           uses: actions/setup-python@v5
