@@ -1,4 +1,8 @@
 name: Run all checks on Kedro-Viz
+# Runs end-to-end tests, unit tests, linting and JavaScript 
+# linting & tests on Kedro-Viz for different 
+# operating systems and Python versions.
+
 on:
   workflow_call:
   workflow_dispatch:

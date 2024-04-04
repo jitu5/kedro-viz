@@ -1,4 +1,7 @@
-name: Release
+name: Release to NPM and PyPI
+# Builds and releases the application to NPM and PyPI 
+# when a new release is published or the workflow is manually triggered.
+
 on:
   release:
     types: [published]

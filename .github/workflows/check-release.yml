@@ -1,4 +1,6 @@
 name: Check version and prepare release
+# Checks the package version, runs tests, and prepares 
+# a new release if the version has been updated.
 
 on:
   push:

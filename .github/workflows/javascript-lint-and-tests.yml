@@ -1,4 +1,6 @@
 name: Run javascript linters and tests on Kedro-Viz
+# Runs JavaScript linting, unit tests, and end-to-end tests on 
+# Kedro-Viz for different operating systems and Python versions.
 
 on:
   workflow_call:

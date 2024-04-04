@@ -1,4 +1,6 @@
 name: Run unit-tests on Kedro-Viz
+# Runs unit tests on Kedro-Viz across different 
+# OS and Python versions after environment setup.
 
 on:
   workflow_call:

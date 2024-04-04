@@ -1,4 +1,7 @@
 name: Deploy demo
+# Builds a Docker image of the demo project, pushes it to 
+# AWS ECR, and deploys it to AWS Lightsail.
+
 on:
   workflow_dispatch:
   push:

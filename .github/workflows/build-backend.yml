@@ -1,4 +1,7 @@
 name: Build backend
+# Runs end-to-end tests, unit tests, and linting on the backend code
+# for different operating systems and Python versions.
+
 on:
   push:
     paths:
