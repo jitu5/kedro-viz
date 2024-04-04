@@ -2,6 +2,9 @@ name: Run all checks on Kedro-Viz
 on:
   workflow_call:
   workflow_dispatch:
+  schedule:
+    # Run every day at 1:00 AM(UTC time)
+    - cron: 0 1 * * *  
 jobs:
   e2e_tests:
     strategy:

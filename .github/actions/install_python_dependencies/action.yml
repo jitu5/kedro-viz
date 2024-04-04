@@ -1,5 +1,5 @@
-name: setup_python_env
-description: Setup Python environment
+name: Install Kedro and other Python Dependencies
+description: Installs Kedro from the main branch and other Python dependencies, then prints the Python version and installed packages.
 runs:
   using: composite
   steps:

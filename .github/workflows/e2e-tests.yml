@@ -34,10 +34,10 @@ jobs:
             path: ~\AppData\Local\pip\Cache
             key: ${{inputs.os}}-python-${{inputs.python-version}}
 
-        - name: Setup Python environment
-          uses: "./.github/actions/setup_python_env"
+        - name: Install Kedro and other Python Dependencies
+          uses: "./.github/actions/install_python_dependencies"
 
-        - name: Install Node dependencies
+        - name: Setup Node.js and Install Dependencies
           uses: "./.github/actions/install_node_dependencies"
         
         - name: Build React application

@@ -26,14 +26,17 @@ jobs:
               path: ~/.cache/pip
               key: ${{inputs.os}}-python-${{inputs.python-version}}            
 
-          - name: Setup Python environment
-            uses: "./.github/actions/setup_python_env"
+          - name: Install Kedro and other Python Dependencies
+            uses: "./.github/actions/install_python_dependencies"
 
-          - name: Install Node dependencies
+          - name: Setup Node.js and Install Dependencies
             uses: "./.github/actions/install_node_dependencies"
 
           - name: Setup Cypress requirements
-            uses: "./.github/actions/setup_cypress_requirements"
+            run: |-
+              sudo sed -i 's/archive.ubuntu.com/us-east-1.ec2.archive.ubuntu.com/g' /etc/apt/sources.list
+              sudo apt-get update
+              sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb          
 
           - name: Test lib transpilation
             run: npm run lib

@@ -1,8 +1,0 @@
-name: Daily all checks
-on:
-  schedule:
-  - cron: 0 1 * * *
-  workflow_dispatch:
-jobs:
-  all-checks:
-    uses: ./.github/workflows/all-checks.yml
