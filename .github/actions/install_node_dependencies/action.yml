@@ -23,11 +23,14 @@ runs:
       run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
       shell: bash
 
-    - uses: actions/cache@v4
+    - name: Cache Node.js packages
+      uses: actions/cache@v2
       with:
+        # path: node_modules
         path: "${{ steps.npm-cache-dir.outputs.dir }}"
-        key: "${{ runner.os }}-node-${{ hashFiles(inputs.package-path + '/package-lock.json') }}"
-        restore-keys: "${{ runner.os }}-node-"
+        key: ${{ runner.os }}-node-${{ hashFiles(format('{0}/package-lock.json', inputs.package-path)) }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
     - run: npm ci
       shell: bash
