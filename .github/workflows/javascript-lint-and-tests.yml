@@ -3,6 +3,13 @@ name: Run javascript linters and tests on Kedro-Viz
 # Kedro-Viz for ubuntu-latest operating systems and Python 3.9.
 
 on:
+  push:
+    paths-ignore:
+      - 'package/**'
+  pull_request:
+    paths-ignore:
+      - 'package/**'
+  workflow_dispatch:  
   workflow_call:
 
 jobs:
@@ -28,6 +35,8 @@ jobs:
 
           - name: Setup Node.js and Install Dependencies
             uses: "./.github/actions/install_node_dependencies"
+            with:
+              node-version: '16.13.2'
 
           - name: Setup Cypress requirements
             run: |-

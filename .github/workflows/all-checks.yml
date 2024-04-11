@@ -42,4 +42,3 @@ jobs:
       
   javascript_lint_and_tests:
     uses: ./.github/workflows/javascript-lint-and-tests.yml
-

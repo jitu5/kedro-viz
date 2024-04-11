@@ -1,6 +1,4 @@
 name: Blocking Issues
-# Prevents PR merges if 'blocking' issues are open 
-# when an issue is closed or a PR is opened/edited.
 
 on:
   issues:
