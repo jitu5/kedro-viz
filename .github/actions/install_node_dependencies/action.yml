@@ -15,22 +15,23 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v4.0.0
+    - name: Setup Node.js
+      uses: actions/setup-node@v4.0.0
       with:
         node-version: ${{ inputs.node-version }}
 
-    - id: npm-cache-dir
+    - name: Get NPM Cache Directory
+      id: npm-cache-dir
       run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Cache Node.js packages
       uses: actions/cache@v2
       with:
-        # path: node_modules
         path: "${{ steps.npm-cache-dir.outputs.dir }}"
-        key: ${{ runner.os }}-node-${{ hashFiles(format('{0}/package-lock.json', inputs.package-path)) }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+        key: "${{ runner.os }}-node-${{ hashFiles(format('{0}/package-lock.json', inputs.package-path)) }}"
+        restore-keys: "${{ runner.os }}-node-"
 
-    - run: npm ci
+    - name: Install Node Dependencies
+      run: npm ci
       shell: bash
