@@ -12,6 +12,8 @@ on:
 jobs:
     e2e_tests:
         runs-on: ${{ inputs.os }}
+        # Only run on main and demo branches for Windows
+        if: inputs.os == 'ubuntu-latest' || ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.event.pull_request.base.ref == 'main') && inputs.os == 'windows-latest')
         steps:
         - name: Checkout code
           uses: actions/checkout@v4
@@ -21,11 +23,6 @@ jobs:
           env:
             ONLY_REF: ${{ github.ref }}
           run: "echo 'Base ref: $ONLY_REF'"
-
-        - name: Print base ref
-          env:
-            BASE_REF_ONLY: ${{ github.base.ref }}
-          run: "echo 'Base ref: $BASE_REF_ONLY'"
 
         - name: Print event base ref
           env:
