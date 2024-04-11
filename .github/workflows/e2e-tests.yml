@@ -13,7 +13,7 @@ jobs:
     e2e_tests:
         runs-on: ${{ inputs.os }}
         # Only run on main and demo branches for Windows
-        if: inputs.os == 'ubuntu-latest' || ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.base_ref == 'refs/heads/main') && inputs.os == 'windows-latest')
+        if: inputs.os == 'ubuntu-latest' || ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/demo' || github.event.pull_request.base.ref == 'refs/heads/main') && inputs.os == 'windows-latest')
         steps:
         - name: Checkout code
           uses: actions/checkout@v4
