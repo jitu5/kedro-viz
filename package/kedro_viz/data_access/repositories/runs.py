@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def check_db_session(method: Callable) -> Callable:
     """Decorator that checks whether the repository instance can create a database session.
-    If not, return None for all repository methods."""
+    If not, return None for all repository methods.."""
 
     @wraps(method)
     def func(self: "RunsRepository", *method_args, **method_kwargs):
