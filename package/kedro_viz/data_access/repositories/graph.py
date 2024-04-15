@@ -5,7 +5,7 @@ from typing import Dict, Generator, List, Optional, Set
 
 from kedro_viz.models.flowchart import GraphEdge, GraphNode
 
-# test push
+
 class GraphNodesRepository:
     def __init__(self):
         self.nodes_dict: Dict[str, GraphNode] = {}
