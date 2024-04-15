@@ -45,7 +45,7 @@ const FeatureHintDot = ({
     findAndSetCoords(featureHintsContent[featureHintStep].elementId);
 
     // Use `appState` to track when the graph layout is changing, updating the
-    // position of the feature hint accordingly.
+    // position of the feature hint accordingly..
   }, [appState, featureHintStep, featureHintsContent, requestedHintClose]);
 
   return (
