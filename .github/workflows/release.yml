@@ -24,7 +24,7 @@ jobs:
 
     - uses: actions/setup-node@v4
       with:
-        node-version: 16.13.2
+        node-version: 18.20.0
         registry-url: 'https://registry.npmjs.org'
     
     - name: Install Node dependencies    
@@ -46,27 +46,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.9
-
-      - name: Cache python packages for Linux
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ubuntu-latest-python-3.9
-
-      - name: Install Kedro and other Python Dependencies
-        uses: "./.github/actions/install_kedro_and_python_dependencies"
-
-      - name: Setup Node.js and Install Dependencies
-        uses: "./.github/actions/install_node_dependencies"
-      
-      - name: Build React application
-        run: |-
-          node -v
-          make build
+      - name: Setup Tests
+        uses: "./.github/actions/setup_tests"
 
       - name: Make Python package
         run: make package
