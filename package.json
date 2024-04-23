@@ -1,5 +1,5 @@
 {
-  "name": "@quantumblack/kedro-viz",
+  "name": "kedro-vizzz",
   "version": "9.0.0",
   "description": "Kedro-Viz is an interactive development tool for building data science pipelines with Kedro.",
   "main": "lib/components/app/index.js",

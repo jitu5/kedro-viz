@@ -5,7 +5,7 @@ from os import path
 
 from setuptools import find_packages, setup
 
-name = "kedro-viz"
+name = "kedro-vizzz"
 here = path.abspath(path.dirname(__file__))
 
 
