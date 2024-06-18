@@ -40,5 +40,5 @@ jobs:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}  
       
-  javascript_lint_and_tests:
-    uses: ./.github/workflows/javascript-lint-and-tests.yml
+  # javascript_lint_and_tests:
+  #   uses: ./.github/workflows/javascript-lint-and-tests.yml

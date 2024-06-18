@@ -6,6 +6,7 @@ runs:
   - name: Install Python dependencies
     run: |-
       pip install git+https://github.com/kedro-org/kedro@main
+      pip install wheel
       pip install -r package/test_requirements.txt -r demo-project/src/docker_requirements.txt -U
     shell: bash
   - name: Echo package versions

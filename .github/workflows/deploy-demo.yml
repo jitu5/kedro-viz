@@ -20,7 +20,7 @@ jobs:
     - name: Setup environment
       run: |-
         cd demo-project
-        echo "AWS_ECR_URL=public.ecr.aws/g0x0s3o2/kedro-viz-live-demo" >> $GITHUB_ENV
+        echo "AWS_ECR_URL=public.ecr.aws/h1b3x4b6/jitu5-kedro-viz" >> $GITHUB_ENV
         echo "KEDRO_VIZ_VERSION=$(cat .version)" >> $GITHUB_ENV
 
     - name: Install AWS CLI
