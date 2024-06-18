@@ -43,7 +43,7 @@ Kedro-Viz is an interactive development tool for building data science pipelines
 - 🎩 Many more to come
 
 ## Installation
-
+FOR GITHUB
 - As a standalone React component (for embedding Kedro-Viz in your web application).
 
   To install the standalone React component:
