@@ -9,6 +9,7 @@ from watchgod import RegExpWatcher, run_process
 from kedro_viz import __version__
 from kedro_viz.constants import SHAREABLEVIZ_SUPPORTED_PLATFORMS, VIZ_DEPLOY_TIME_LIMIT
 from kedro_viz.launchers import cli
+from kedro_viz.launchers.utils import _PYPROJECT
 from kedro_viz.server import run_server
 
 
@@ -85,8 +86,10 @@ def mock_project_path(mocker):
                 "save_file": None,
                 "pipeline_name": None,
                 "env": None,
+                "project_path": "testPath",
                 "autoreload": False,
                 "include_hooks": False,
+                "package_name": None,
                 "extra_params": {},
             },
         ),
@@ -99,8 +102,10 @@ def mock_project_path(mocker):
                 "save_file": None,
                 "pipeline_name": None,
                 "env": None,
+                "project_path": "testPath",
                 "autoreload": False,
                 "include_hooks": False,
+                "package_name": None,
                 "extra_params": {},
             },
         ),
@@ -118,8 +123,10 @@ def mock_project_path(mocker):
                 "save_file": None,
                 "pipeline_name": None,
                 "env": None,
+                "project_path": "testPath",
                 "autoreload": False,
                 "include_hooks": False,
+                "package_name": None,
                 "extra_params": {},
             },
         ),
@@ -148,8 +155,10 @@ def mock_project_path(mocker):
                 "save_file": "save_dir",
                 "pipeline_name": "data_science",
                 "env": "local",
+                "project_path": "testPath",
                 "autoreload": False,
                 "include_hooks": False,
+                "package_name": None,
                 "extra_params": {"extra_param": "param"},
             },
         ),
@@ -162,8 +171,10 @@ def mock_project_path(mocker):
                 "save_file": None,
                 "pipeline_name": None,
                 "env": None,
+                "project_path": "testPath",
                 "autoreload": False,
                 "include_hooks": True,
+                "package_name": None,
                 "extra_params": {},
             },
         ),
@@ -180,6 +191,11 @@ def test_kedro_viz_command_run_server(
     runner = CliRunner()
     # Reduce the timeout argument from 600 to 1 to make test run faster.
     mocker.patch("kedro_viz.launchers.cli._wait_for.__defaults__", (True, 1, True, 1))
+    # Mock finding kedro project
+    mocker.patch(
+        "kedro_viz.launchers.cli._find_kedro_project",
+        return_value=run_server_args["project_path"],
+    )
 
     with runner.isolated_filesystem():
         runner.invoke(cli.viz_cli, command_options)
@@ -190,8 +206,30 @@ def test_kedro_viz_command_run_server(
     assert run_server_args["port"] in cli._VIZ_PROCESSES
 
 
+def test_kedro_viz_command_should_log_project_not_found(
+    mocker, mock_project_path, mock_click_echo
+):
+    # Reduce the timeout argument from 600 to 1 to make test run faster.
+    mocker.patch("kedro_viz.launchers.cli._wait_for.__defaults__", (True, 1, True, 1))
+    # Mock finding kedro project
+    mocker.patch("kedro_viz.launchers.cli._find_kedro_project", return_value=None)
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        runner.invoke(cli.viz_cli, ["viz", "run"])
+
+    mock_click_echo_calls = [
+        call(
+            "\x1b[31mERROR: Failed to start Kedro-Viz : "
+            "Could not find the project configuration "
+            f"file '{_PYPROJECT}' at '{mock_project_path}'. \x1b[0m"
+        )
+    ]
+
+    mock_click_echo.assert_has_calls(mock_click_echo_calls)
+
+
 def test_kedro_viz_command_should_log_outdated_version(
-    mocker, mock_http_response, mock_click_echo
+    mocker, mock_http_response, mock_click_echo, mock_project_path
 ):
     installed_version = parse(__version__)
     mock_version = f"{installed_version.major + 1}.0.0"
@@ -204,6 +242,10 @@ def test_kedro_viz_command_should_log_outdated_version(
 
     # Reduce the timeout argument from 600 to 1 to make test run faster.
     mocker.patch("kedro_viz.launchers.cli._wait_for.__defaults__", (True, 1, True, 1))
+    # Mock finding kedro project
+    mocker.patch(
+        "kedro_viz.launchers.cli._find_kedro_project", return_value=mock_project_path
+    )
     runner = CliRunner()
     with runner.isolated_filesystem():
         runner.invoke(cli.viz_cli, ["viz", "run"])
@@ -223,7 +265,7 @@ def test_kedro_viz_command_should_log_outdated_version(
 
 
 def test_kedro_viz_command_should_not_log_latest_version(
-    mocker, mock_http_response, mock_click_echo
+    mocker, mock_http_response, mock_click_echo, mock_project_path
 ):
     requests_get = mocker.patch("requests.get")
     requests_get.return_value = mock_http_response(
@@ -233,6 +275,10 @@ def test_kedro_viz_command_should_not_log_latest_version(
     mocker.patch("kedro_viz.server.run_server")
     # Reduce the timeout argument from 600 to 1 to make test run faster.
     mocker.patch("kedro_viz.launchers.cli._wait_for.__defaults__", (True, 1, True, 1))
+    # Mock finding kedro project
+    mocker.patch(
+        "kedro_viz.launchers.cli._find_kedro_project", return_value=mock_project_path
+    )
     runner = CliRunner()
     with runner.isolated_filesystem():
         runner.invoke(cli.viz_cli, ["viz", "run"])
@@ -243,7 +289,7 @@ def test_kedro_viz_command_should_not_log_latest_version(
 
 
 def test_kedro_viz_command_should_not_log_if_pypi_is_down(
-    mocker, mock_http_response, mock_click_echo
+    mocker, mock_http_response, mock_click_echo, mock_project_path
 ):
     requests_get = mocker.patch("requests.get")
     requests_get.side_effect = requests.exceptions.RequestException("PyPI is down")
@@ -251,6 +297,10 @@ def test_kedro_viz_command_should_not_log_if_pypi_is_down(
     mocker.patch("kedro_viz.server.run_server")
     # Reduce the timeout argument from 600 to 1 to make test run faster.
     mocker.patch("kedro_viz.launchers.cli._wait_for.__defaults__", (True, 1, True, 1))
+    # Mock finding kedro project
+    mocker.patch(
+        "kedro_viz.launchers.cli._find_kedro_project", return_value=mock_project_path
+    )
     runner = CliRunner()
     with runner.isolated_filesystem():
         runner.invoke(cli.viz_cli, ["viz", "run"])
@@ -267,6 +317,10 @@ def test_kedro_viz_command_with_autoreload(
 
     # Reduce the timeout argument from 600 to 1 to make test run faster.
     mocker.patch("kedro_viz.launchers.cli._wait_for.__defaults__", (True, 1, True, 1))
+    # Mock finding kedro project
+    mocker.patch(
+        "kedro_viz.launchers.cli._find_kedro_project", return_value=mock_project_path
+    )
     runner = CliRunner()
     with runner.isolated_filesystem():
         runner.invoke(cli.viz_cli, ["viz", "run", "--autoreload"])
@@ -284,6 +338,7 @@ def test_kedro_viz_command_with_autoreload(
             "autoreload": True,
             "project_path": mock_project_path,
             "include_hooks": False,
+            "package_name": None,
             "extra_params": {},
         },
         "watcher_cls": RegExpWatcher,
@@ -390,6 +445,25 @@ def test_viz_command_group(mocker, mock_click_echo):
                 "include_hooks": True,
             },
         ),
+        (
+            [
+                "viz",
+                "deploy",
+                "--platform",
+                "aws",
+                "--endpoint",
+                "http://example-bucket.s3-website.us-east-2.amazonaws.com/",
+                "--bucket-name",
+                "example-bucket",
+                "--include-previews",
+            ],
+            {
+                "platform": "aws",
+                "endpoint": "http://example-bucket.s3-website.us-east-2.amazonaws.com/",
+                "bucket_name": "example-bucket",
+                "preview": True,
+            },
+        ),
     ],
 )
 def test_viz_deploy_valid_endpoint_and_bucket(command_options, deployer_args, mocker):
@@ -406,6 +480,7 @@ def test_viz_deploy_valid_endpoint_and_bucket(command_options, deployer_args, mo
 
     create_shareableviz_process_mock.assert_called_once_with(
         deployer_args.get("platform"),
+        deployer_args.get("preview", False),
         deployer_args.get("endpoint"),
         deployer_args.get("bucket_name"),
         deployer_args.get("include_hooks", False),
@@ -484,6 +559,10 @@ def test_viz_deploy_invalid_endpoint(mocker, mock_click_echo):
             ["viz", "build", "--include-hooks"],
             {"platform": "local", "include_hooks": True},
         ),
+        (
+            ["viz", "build", "--include-previews"],
+            {"platform": "local", "preview": True},
+        ),
     ],
 )
 def test_successful_build_with_existing_static_files(
@@ -502,15 +581,18 @@ def test_successful_build_with_existing_static_files(
 
     create_shareableviz_process_mock.assert_called_once_with(
         build_args.get("platform"),
+        build_args.get("preview", False),
         include_hooks=build_args.get("include_hooks", False),
     )
 
 
 @pytest.mark.parametrize(
-    "platform, endpoint, bucket_name, include_hooks, process_completed_value",
+    "platform, is_all_previews_enabled, endpoint, bucket_name,"
+    "include_hooks, process_completed_value",
     [
         (
             "azure",
+            True,
             "https://example-bucket.web.core.windows.net",
             "example-bucket",
             True,
@@ -518,6 +600,7 @@ def test_successful_build_with_existing_static_files(
         ),
         (
             "aws",
+            True,
             "http://example-bucket.s3-website.us-east-2.amazonaws.com/",
             "example-bucket",
             True,
@@ -525,14 +608,16 @@ def test_successful_build_with_existing_static_files(
         ),
         (
             "gcp",
+            False,
             "http://34.120.87.227/",
             "example-bucket",
             False,
             1,
         ),
-        ("local", None, None, False, 1),
+        ("local", False, None, None, False, 1),
         (
             "azure",
+            True,
             "https://example-bucket.web.core.windows.net",
             "example-bucket",
             False,
@@ -540,6 +625,7 @@ def test_successful_build_with_existing_static_files(
         ),
         (
             "aws",
+            False,
             "http://example-bucket.s3-website.us-east-2.amazonaws.com/",
             "example-bucket",
             False,
@@ -547,16 +633,18 @@ def test_successful_build_with_existing_static_files(
         ),
         (
             "gcp",
+            True,
             "http://34.120.87.227/",
             "example-bucket",
             True,
             0,
         ),
-        ("local", None, None, True, 0),
+        ("local", True, None, None, True, 0),
     ],
 )
 def test_create_shareableviz_process(
     platform,
+    is_all_previews_enabled,
     endpoint,
     bucket_name,
     include_hooks,
@@ -569,16 +657,20 @@ def test_create_shareableviz_process(
     mock_click_echo,
 ):
     mock_process_completed.return_value.value = process_completed_value
-    cli.create_shareableviz_process(platform, endpoint, bucket_name, include_hooks)
+    cli.create_shareableviz_process(
+        platform, is_all_previews_enabled, endpoint, bucket_name, include_hooks
+    )
 
     # Assert the mocks were called as expected
     mock_viz_deploy_process.assert_called_once_with(
         target=mock_viz_load_and_deploy,
         args=(
             platform,
+            is_all_previews_enabled,
             endpoint,
             bucket_name,
             include_hooks,
+            None,
             mock_process_completed.return_value,
             mock_exception_queue.return_value,
         ),
@@ -614,29 +706,35 @@ def test_create_shareableviz_process(
 
 
 @pytest.mark.parametrize(
-    "platform, endpoint, bucket_name, include_hooks",
+    "platform, is_all_previews_enabled, endpoint, bucket_name, include_hooks, package_name",
     [
         (
             "azure",
+            False,
             "https://example-bucket.web.core.windows.net",
             "example-bucket",
             False,
+            "demo_project",
         ),
         (
             "aws",
+            True,
             "http://example-bucket.s3-website.us-east-2.amazonaws.com/",
             "example-bucket",
             True,
+            "demo_project",
         ),
-        ("gcp", "http://34.120.87.227/", "example-bucket", False),
-        ("local", None, None, True),
+        ("gcp", True, "http://34.120.87.227/", "example-bucket", False, "demo_project"),
+        ("local", False, None, None, True, "demo_project"),
     ],
 )
 def test_load_and_deploy_viz_success(
     platform,
+    is_all_previews_enabled,
     endpoint,
     bucket_name,
     include_hooks,
+    package_name,
     mock_DeployerFactory,
     mock_load_and_populate_data,
     mock_process_completed,
@@ -648,18 +746,20 @@ def test_load_and_deploy_viz_success(
 
     cli.load_and_deploy_viz(
         platform,
+        is_all_previews_enabled,
         endpoint,
         bucket_name,
         include_hooks,
+        package_name,
         mock_process_completed,
         mock_exception_queue,
     )
 
     mock_load_and_populate_data.assert_called_once_with(
-        mock_project_path, include_hooks=include_hooks
+        mock_project_path, include_hooks=include_hooks, package_name=package_name
     )
     mock_DeployerFactory.create_deployer.assert_called_once_with(
         platform, endpoint, bucket_name
     )
-    deployer_mock.deploy.assert_called_once()
+    deployer_mock.deploy.assert_called_once_with(is_all_previews_enabled)
     mock_click_echo.echo.assert_not_called()
