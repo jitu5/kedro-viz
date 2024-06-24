@@ -82,9 +82,106 @@ The JSON can be obtained by running:
 kedro viz run --save-file=filename
 ```
 
+The command will generate a folder with the specified <filename>, containing the following structure: 
+
+```
+<filename>/api/
+├── main
+├── nodes
+│   ├── 23c94afb
+│   ├── 28754fab
+│   ├── 2ab3579f
+│   ├── 329e963c
+│   ├── 369acf98
+│   └── ...
+└── pipelines
+    ├── __default__
+    ├── data_processing
+    ├── data_science
+    └── ...
+```
+
+Please use the `main` file as the input JSON for the `data` prop in your Kedro-Viz component.
+
 We also recommend wrapping the `Kedro-Viz` component with a parent HTML/JSX element that has a specified height (as seen in the above example) in order for Kedro-Viz to be styled properly.
 
 **_Our documentation contains [additional examples on how to visualise with Kedro-Viz.](https://docs.kedro.org/en/stable/visualisation/index.html)_**
+
+## Props
+
+Below is the example with all possible props. 
+
+```
+  <KedroViz
+    data={json}
+    preview
+    display={{
+      globalToolbar: false,
+      miniMap: false,
+      expandAllPipelines: false,
+    }}
+    visible={{
+      labelBtn: false,
+      layerBtn: false,
+      exportBtn: false,
+      pipelineBtn: false,
+      sidebar: false,
+    }}
+    theme="dark"
+  /> 
+```
+
+| Name         | Type    | Default | Description |
+| ------------ | ------- | ------- | ----------- |
+| `data` | `{ edges: array (required), layers: array, nodes: array (required), tags: array }` | - | Pipeline data will be displayed on the chart |
+| `theme` | string | dark | select Kedro-Viz theme dark/light |
+| `preview` | boolean | false | Use Kedro-Viz in preview mode with flowchart and hiding all other components except metadata panel which will be visible when you click on the node |
+| display |  |  |  |
+| `globalToolbar` | boolean | true | If `false` Global sidebar on extreme left will be hidden |
+| `miniMap` | boolean | true | If `false` miniMap button at the bottom of the primaryToolbar will be hidden |
+| `expandAllPipelines` | boolean | false | If `true` all modular pipelines on first load will be expanded |
+| visible |  |  |  |
+| `labelBtn` | boolean | true | If `false` labelBtn button at the top of the primaryToolbar will be hidden |
+| `layerBtn` | boolean | true | If `false` layerBtn button at the top of the primaryToolbar will be hidden |
+| `exportBtn` | boolean | true | If `false` exportBtn button at the top of the primaryToolbar will be hidden |
+| `pipelineBtn` | boolean | true | If `false` pipelineBtn button at the top of the primaryToolbar will be hidden |
+| `sidebar` | boolean | true | If `false` sidebar on left will be minimized |
+
+### Note
+When `preview` is `true`, `display` and `visible` props are ignored as all major components are hidden.
+
+All components are annotated to understand their positions in the Kedro-Viz UI.
+
+![Kedro-Viz component annotation](https://raw.githubusercontent.com/jitu5/kedro-viz/main/.github/img/kedro-viz-annotation.png)
+
+
+## Feature Flags
+
+Kedro-Viz uses features flags to roll out some experimental features. The following flags are currently in use:
+
+| Flag               | Description                                                                             |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| sizewarning        | From release v3.9.1. Show a warning before rendering very large graphs (default `true`) |
+| expandAllPipelines | From release v4.3.2. Expand all modular pipelines on first load (default `false`)       |
+
+To enable or disable a flag, click on the settings icon in the toolbar and toggle the flag on/off.
+
+Kedro-Viz also logs a message in your browser's [developer console](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_are_browser_developer_tools#The_JavaScript_console) to show the available flags and their values as currently set on your machine.
+
+## Standalone Example Repository
+
+We have created a [kedro-viz-standalone](https://github.com/kedro-org/kedro-viz-standalone.git) repository to demonstrate how to use Kedro-Viz in standalone mode or embedded in a React application.
+
+This repository provides a fully functional example of Kedro-Viz, showcasing how to integrate it into your projects. The example includes setup instructions and demonstrates various features of Kedro-Viz.
+
+To get started, clone the repository, install the dependencies and run the example React application:
+
+```
+git clone https://github.com/kedro-org/kedro-viz-standalone.git
+cd kedro-viz-standalone
+npm install
+npm start
+```
 
 ## Maintainers
 
