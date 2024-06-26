@@ -35,8 +35,8 @@ jobs:
         node -v
         make build
 
-    - name: Use NPM-specific README
-      run: mv README.npm.md README.md
+    # - name: Use NPM-specific README
+    #   run: mv README.npm.md README.md
     
     - name: Publish to npm
       run: npm publish --access=public
