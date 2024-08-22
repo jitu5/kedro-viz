@@ -1,6 +1,6 @@
 {
   "name": "my-kviz",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "vscode",
   "main": "lib/components/app/index.js",
   "files": [
