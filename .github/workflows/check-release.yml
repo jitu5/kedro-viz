@@ -10,6 +10,25 @@ env:
   PYTHON_VERSION: '3.9'
 
 jobs:
+  release_to_npm_test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        registry-url: ${{ env.REGISTRY_URL }}
+    
+    - name: Install Node dependencies    
+      run: npm install
+
+    - name: Build React application
+      run: |-
+        node -v
+        make build
+        
   check-version:
     runs-on: ubuntu-latest
     steps:
