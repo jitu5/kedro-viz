@@ -15,6 +15,7 @@ import {
 import { toggleFocusMode } from '../../actions';
 import { loadNodeData } from '../../actions/nodes';
 import { loadPipelineData } from '../../actions/pipelines';
+import { toggleModularPipelinesVisibilityState } from '../../actions/modular-pipelines';
 import ExportModal from '../export-modal';
 import FlowChart from '../flowchart';
 import PipelineWarning from '../pipeline-warning';
@@ -55,6 +56,7 @@ export const FlowChartWrapper = ({
   onToggleFocusMode,
   onToggleModularPipelineActive,
   onToggleModularPipelineExpanded,
+  onToggleModularPipelinesVisibilityState,
   onToggleNodeSelected,
   onUpdateActivePipeline,
   pipelines,
@@ -76,6 +78,7 @@ export const FlowChartWrapper = ({
   const [usedNavigationBtn, setUsedNavigationBtn] = useState(false);
 
   const graphRef = useRef(null);
+  const isFirstRender = useRef(true);
 
   const {
     matchedFlowchartMainPage,
@@ -124,6 +127,16 @@ export const FlowChartWrapper = ({
     setParamsFromLocalStorage(activePipeline);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePipeline, tag, nodeType, expandAllPipelines]);
+
+  useEffect(() => {
+    // Skip the first render to avoid unnecessary call of onToggleModularPipelinesVisibilityState
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    
+    onToggleModularPipelinesVisibilityState(expandAllPipelines);
+  }, [expandAllPipelines, onToggleModularPipelinesVisibilityState]);
 
   const resetErrorMessage = () => {
     setErrorMessage({});
@@ -351,6 +364,9 @@ export const mapDispatchToProps = (dispatch) => ({
   },
   onToggleNodeSelected: (nodeID) => {
     dispatch(loadNodeData(nodeID));
+  },
+  onToggleModularPipelinesVisibilityState: (isExpanded) => {
+    dispatch(toggleModularPipelinesVisibilityState(isExpanded));
   },
   onToggleModularPipelineActive: (modularPipelineIDs, active) => {
     dispatch(toggleModularPipelineActive(modularPipelineIDs, active));
