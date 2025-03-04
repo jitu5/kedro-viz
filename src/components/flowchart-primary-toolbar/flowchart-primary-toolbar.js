@@ -8,6 +8,7 @@ import {
   toggleExpandAllPipelines,
   toggleOrientation,
 } from '../../actions';
+import { toggleModularPipelinesVisibilityState } from '../../actions/modular-pipelines';
 import IconButton from '../ui/icon-button';
 import LabelIcon from '../icons/label';
 import ExportIcon from '../icons/export';
@@ -145,6 +146,7 @@ export const mapDispatchToProps = (dispatch) => ({
   },
   onToggleExpandAllPipelines: (isExpanded) => {
     dispatch(toggleExpandAllPipelines(isExpanded));
+    dispatch(toggleModularPipelinesVisibilityState(isExpanded));
   },
   onToggleOrientation: (value) => {
     dispatch(toggleOrientation(value));
