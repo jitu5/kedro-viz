@@ -24,6 +24,19 @@ export function toggleLayers(visible) {
   };
 }
 
+export const TOGGLE_ORIENTATION = 'TOGGLE_ORIENTATION';
+
+/**
+ * Toggle whether to show horizontal or vertical orientation
+ * @param {string} orientation The orientation to set to vertical by default
+ */
+export function toggleOrientation(orientation) {
+  return {
+    type: TOGGLE_ORIENTATION,
+    orientation,
+  };
+}
+
 export const TOGGLE_EXPAND_ALL_PIPELINES = 'TOGGLE_EXPAND_ALL_PIPELINES';
 
 /**
@@ -112,6 +125,17 @@ export function toggleTextLabels(textLabels) {
   return {
     type: TOGGLE_TEXT_LABELS,
     textLabels,
+  };
+}
+
+export const SHOW_PIPELINE_FILTER = 'SHOW_PIPELINE_FILTER';
+
+/**
+ * Toggle to show pipeline filter
+ */
+export function togglePipelineFilter() {
+  return {
+    type: SHOW_PIPELINE_FILTER,
   };
 }
 

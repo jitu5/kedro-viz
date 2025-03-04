@@ -22,6 +22,7 @@ export const createInitialState = () => ({
   textLabels: true,
   theme: 'dark',
   expandAllPipelines: false,
+  orientation: 'vertical',
   isPrettyName: settings.isPrettyName.default,
   showFeatureHints: settings.showFeatureHints.default,
   showDatasetPreviews: settings.showDatasetPreviews.default,
@@ -54,8 +55,10 @@ export const createInitialState = () => ({
     exportBtn: true,
     labelBtn: true,
     layerBtn: true,
+    orientationBtn: true,
     zoomToolbar: true,
     metadataPanel: true,
+    filterBtn: false,
   },
   behaviour: {
     reFocus: true,
