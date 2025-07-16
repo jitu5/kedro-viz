@@ -1,6 +1,6 @@
 {
   "name": "kedro-vi122",
-  "version": "1.21.0-rc11",
+  "version": "1.21.0-rc12",
   "description": "It is an interactive development tool for building data science pipelines.",
   "main": "lib/components/app/index.js",
   "files": [
