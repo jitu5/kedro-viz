@@ -48,39 +48,5 @@ module.exports = [
         filename: 'styles.min.css',
       }),
     ],
-    externals: {
-      // Don't bundle React and ReactDOM in the library
-      react: 'react',
-      'react-dom': 'react-dom',
-    },
-  },
-  // 2. Bundle the web worker
-  {
-    mode: 'production',
-    entry: './lib/utils/worker.js',
-    output: {
-      filename: 'worker.js',
-      globalObject: 'self',
-      libraryTarget: 'umd',
-      path: path.resolve(__dirname, 'lib/utils'),
-    },
-    module: {
-      rules: [
-        {
-          test: /\.(js|jsx)$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env'],
-            },
-          },
-        },
-      ],
-    },
-    resolve: {
-      extensions: ['.js', '.jsx'],
-    },
   },
 ];
-
