@@ -96,13 +96,7 @@ Ensure your `Kedro`, `Kedro-Viz` and `Kedro-datasets` versions are supported by 
         <td>1.8.0</td>
     </tr>
     <tr>
-        <td>3.9</td>
-        <td>Latest</td>
-        <td>Latest</td>
-        <td>5.0.0</td>
-    </tr>
-    <tr>
-        <td>>= 3.10</td>
+        <td>>= 3.9</td>
         <td>Latest</td>
         <td>Latest</td>
         <td>Latest</td>
