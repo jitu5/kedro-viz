@@ -1,61 +1,52 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-// Bundle and inline web-workers
-module.exports = [
+const rules = [
   {
-    mode: 'production',
-    entry: './lib/utils/worker.js',
-    output: {
-      filename: 'worker.js',
-      globalObject: 'this',
-      libraryTarget: 'umd',
-      path: path.resolve(__dirname, 'lib/utils'),
+    test: /\.(js|jsx)$/,
+    exclude: /node_modules/,
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env', '@babel/preset-react'],
+      },
     },
   },
   {
+    test: /\.scss$/,
+    use: [
+      MiniCssExtractPlugin.loader,
+      {
+        loader: 'css-loader',
+        options: { importLoaders: 1 },
+      },
+      'postcss-loader',
+      'sass-loader',
+    ],
+    sideEffects: true,
+  },
+];
+
+module.exports = [
+  // 1. Bundle the main Kedro-Viz lib
+  {
     mode: 'production',
-    entry: './lib/components/container/container.js',
+    entry: './lib/components/app/index.js',
     output: {
-      path: path.resolve(__dirname, 'lib/styles'),
+      path: path.resolve(__dirname, 'lib'),
+      filename: 'index.js',
+      libraryTarget: 'commonjs2',
+    },
+    module: {
+      rules,
+    },
+    resolve: {
+      extensions: ['.js', '.jsx'],
     },
     plugins: [
       new MiniCssExtractPlugin({
-        filename: 'styles.min.css',
+        filename: 'styles/styles.min.css',
       }),
     ],
-    module: {
-      rules: [
-        {
-          test: /\.(js)$/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-            },
-          },
-          exclude: /node_modules/,
-        },
-        {
-          test: /\.scss$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-            },
-            {
-              loader: require.resolve('css-loader'),
-              options: { importLoaders: 3 },
-            },
-            {
-              loader: require.resolve('postcss-loader'),
-            },
-            {
-              loader: require.resolve('sass-loader'),
-            },
-          ],
-          sideEffects: true,
-        },
-      ],
-    },
   },
 ];
