@@ -5,14 +5,17 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   base: './',
   define: { 'process.env': {} },
-  esbuild: {
-    // Ensure JSX is handled correctly
-    jsx: 'automatic',
-  },
   plugins: [
     react({
-      // Explicitly enable JSX
-      include: '**/*.{jsx,js}',
+      // Use babel to transform JSX - this is more reliable for library builds
+      babel: {
+        presets: ['@babel/preset-react'],
+        plugins: [
+          ['@babel/plugin-proposal-class-properties', { loose: true }],
+          ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
+          ['@babel/plugin-proposal-private-methods', { loose: true }]
+        ]
+      }
     }),
     // Generate type definitions for consumers of the library
     dts({ insertTypesEntry: true })
