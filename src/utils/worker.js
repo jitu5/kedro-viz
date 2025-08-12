@@ -4,36 +4,43 @@
 // Web workers don't work in Jest, so in a test environment we directly import
 // them instead, and then mock up a faux-worker function
 
-/* eslint-disable import/no-webpack-loader-syntax */
-
-// Check for test environment
-const isTest = typeof jest !== 'undefined';
-
-// Conditionally load task via web worker only in non-test env
-const graphWorker = isTest
-  ? require('./graph')
-  : require('workerize-loader?inline!./graph');
+/**
+ * Resolve the worker file path for both ES modules and CommonJS builds.
+ * In modern bundlers (Vite/Webpack 5) `import.meta.url` is defined, and Rollup
+ * rewrites the `new URL()` call to point at the emitted worker chunk.
+ * When building a CommonJS bundle, `import.meta` is undefined, so fall back to
+ * resolving the worker relative to `__dirname`. This ensures that consumers using
+ * CommonJS can still load the worker correctly.
+ */
+const workerPath =
+  typeof import.meta !== 'undefined' && import.meta.url
+    ? new URL('./graph-worker.js', import.meta.url).href
+    : new URL('graph-worker.js', new URL('file:' + __dirname + '/')).href;
 
 /**
  * Emulate a web worker for testing purposes
  */
-const createMockWorker = (worker) => {
-  if (!isTest) {
-    return worker;
-  }
-  return () => {
-    const mockWorker = {
-      terminate: () => {},
-    };
-    Object.keys(worker).forEach((name) => {
-      mockWorker[name] = (payload) =>
-        new Promise((resolve) => resolve(worker[name](payload)));
-    });
-    return mockWorker;
+const createMockWorker = () => {
+  const graphModule = require('./graph');
+  const mockWorker = {
+    terminate: () => {},
   };
+  
+  Object.keys(graphModule).forEach((name) => {
+    mockWorker[name] = (payload) =>
+      new Promise((resolve) => resolve(graphModule[name](payload)));
+  });
+  
+  return mockWorker;
 };
 
-export const graph = createMockWorker(graphWorker);
+export const graph = () => {
+  // During tests we stub out the Worker API via createMockWorker
+  if (process.env.NODE_ENV === 'test') {
+    return createMockWorker();
+  }
+  return new Worker(workerPath, { type: 'module' });
+};
 
 /**
  * Manage the worker, avoiding race conditions by terminating running
