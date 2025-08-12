@@ -2,9 +2,18 @@
   "name": "@quantumblack/kedro-viz",
   "version": "12.0.0",
   "description": "Kedro-Viz is an interactive development tool for building data science pipelines with Kedro.",
-  "main": "lib/components/app/index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
   "files": [
-    "lib"
+    "dist"
   ],
   "homepage": ".",
   "repository": {
@@ -14,7 +23,7 @@
   "proxy": "http://localhost:4142/",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp ./dist/index.html ./dist/404.html",
+    "build": "vite build",
     "build:esm": "rm -rf esm && webpack --config webpack.config.js",
     "preview": "vite preview",
     "start": "REACT_APP_DATA_SOURCE=$DATA NODE_OPTIONS=\"--dns-result-order=ipv4first\" npm-run-all -p dev start:lib",
@@ -23,7 +32,6 @@
     "lib": "npm-run-all -s lib:clean lib:copy lib:webpack lib:babel lib:prune",
     "lib:clean": "rm -rf lib",
     "lib:copy": "cp -rf src lib",
-    "lib:webpack": "webpack --config webpack.lib.js",
     "lib:babel": "BABEL_ENV=lib babel lib --out-dir lib",
     "lib:prune": "find lib -type f -name '*.test.*' -delete && find lib -type f -name '*.scss' -delete && find lib -type f -name '*.jsx' -delete",
     "lib-test": "npm-run-all -s lib lib-test:setup lib-test:serve",
@@ -43,7 +51,7 @@
     "cy:ci": "./cypress/support/cy.start.sh ci",
     "snyk-protect": "snyk protect",
     "snyk-test": "snyk test -prune-repeated-subdependencies",
-    "prepublishOnly": "npm-run-all -s test:ci lint build lib"
+    "prepublishOnly": "npm-run-all -s test:ci lint build"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -141,6 +149,7 @@
     "stylelint-order": "^6.0.3",
     "stylelint-prettier": "^1.2.0",
     "vite": "^6.3.5",
+    "vite-plugin-dts": "^3.9.1",
     "webpack-cli": "^4.7.2",
     "whatwg-fetch": "^3.6.20"
   },
