@@ -1,8 +1,21 @@
 // Check for test environment
 const isTest = typeof jest !== 'undefined';
 
+/**
+ * Resolve the worker file path for both ES modules and CommonJS builds.
+ * In modern bundlers (Vite/Webpack 5) `import.meta.url` is defined, and Rollup
+ * rewrites the `new URL()` call to point at the emitted worker chunk.
+ * When building a CommonJS bundle, `import.meta` is undefined, so fall back to
+ * resolving the worker relative to `__dirname`. This ensures that consumers using
+ * CommonJS can still load the worker correctly.
+ */
+const workerPath =
+  typeof import.meta !== 'undefined' && import.meta.url
+    ? new URL('./graph-worker.js', import.meta.url).href
+    : new URL('graph-worker.js', new URL('file:' + __dirname + '/')).href;
+
 const createWorker = () => {
-  return new Worker(new URL('./graph-worker.js', import.meta.url), {
+  return new Worker(workerPath, {
     type: 'module',
   });
 };
