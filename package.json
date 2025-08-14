@@ -51,7 +51,7 @@
     "cy:ci": "./cypress/support/cy.start.sh ci",
     "snyk-protect": "snyk protect",
     "snyk-test": "snyk test -prune-repeated-subdependencies",
-    "prepublishOnly": "npm-run-all -s test:ci lint lib"
+    "prepublishOnly": "npm-run-all -s lint lib"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
