@@ -2,10 +2,18 @@
   "name": "kedro-vi122",
   "version": "1.21.0-rc18",
   "description": "Kedro-Viz is an interactive development tool for building data science pipelines with Kedro.",
-  "main": "lib/components/app/index.js",
+  "main": "lib/index.cjs",
+  "module": "lib/index.mjs",
   "files": [
     "lib"
   ],
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./*": "./lib/*"
+  },
   "homepage": ".",
   "repository": {
     "type": "git",
@@ -20,10 +28,10 @@
     "start": "REACT_APP_DATA_SOURCE=$DATA NODE_OPTIONS=\"--dns-result-order=ipv4first\" npm-run-all -p dev start:lib",
     "start:dev": "rm -rf node_modules/.cache && npm run start",
     "start:lib": "rm -rf lib && babel src --out-dir lib --copy-files --watch",
-    "lib": "npm-run-all -s lib:clean lib:copy lib:webpack lib:babel lib:prune",
+    "lib": "npm-run-all -s lib:clean lib:copy rollup:lib lib:babel lib:prune",
     "lib:clean": "rm -rf lib",
     "lib:copy": "cp -rf src lib",
-    "lib:webpack": "webpack --config webpack.lib.js",
+    "rollup:lib": "rollup -c",
     "lib:babel": "BABEL_ENV=lib babel lib --out-dir lib",
     "lib:prune": "find lib -type f -name '*.test.*' -delete && find lib -type f -name '*.scss' -delete && find lib -type f -name '*.jsx' -delete",
     "lib-test": "npm-run-all -s lib lib-test:setup lib-test:serve",
@@ -43,7 +51,7 @@
     "cy:ci": "./cypress/support/cy.start.sh ci",
     "snyk-protect": "snyk protect",
     "snyk-test": "snyk test -prune-repeated-subdependencies",
-    "prepublishOnly": "npm-run-all -s test:ci lint build lib"
+    "prepublishOnly": "npm-run-all -s test:ci lint lib"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -104,6 +112,11 @@
     "@babel/plugin-transform-runtime": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
     "@babel/preset-react": "^7.27.1",
+    "@babel/runtime": "^7.28.2",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^14.5.1",
@@ -131,6 +144,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-overlay": "^6.0.9",
+    "rollup": "^4.46.2",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-web-worker-loader": "^1.7.0",
     "sass": "^1.54.4",
     "sass-loader": "^14.1.1",
     "snyk": "^1.639.0",

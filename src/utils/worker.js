@@ -1,10 +1,18 @@
+// In Vite dev (?worker) => this is a constructor function/class.
+// In Rollup lib (web-worker-loader) => this is a URL string.
+import WorkerRef from './graph-worker.js?worker';
+
 // Check for test environment
 const isTest = typeof jest !== 'undefined';
 
 const createWorker = () => {
-  return new Worker(new URL('./graph-worker.js', import.meta.url), {
-    type: 'module',
-  });
+  if (typeof WorkerRef === 'function') {
+    // Vite dev: WorkerRef is the Worker wrapper/constructor
+    // (options are optional; wrapper usually sets type:'module' internally)
+    return new WorkerRef({ type: 'module' });
+  }
+  // Rollup lib: WorkerRef is a URL string
+  return new Worker(WorkerRef, { type: 'module' });
 };
 
 /**
