@@ -3,6 +3,7 @@ const isTest = typeof jest !== 'undefined';
 
 let workerOverrideURL = null;
 export function setWorkerURL(url) {
+  console.log('[kedro-viz] setWorkerURL called with', url);
   workerOverrideURL = url;
 }
 
