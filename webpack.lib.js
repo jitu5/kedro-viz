@@ -27,12 +27,17 @@ const rules = [
   },
   {
     test: /graph-worker\.js$/,
-    use: [
-      {
-        loader: 'worker-loader',
-        options: { inline: 'no-fallback', esModule: true, type: 'module' },
-      },
-    ],
+   use: {
+     loader: 'worker-loader',
+     options: {
+       inline: 'no-fallback',     // inline as Blob (no file fetch)
+       esModule: true,            // ESM export
+       worker: {                  // <-- options for the Worker constructor
+         type: 'module',
+         name: 'graph-worker',
+       },
+     },
+   },
   },
 ];
 

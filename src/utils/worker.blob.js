@@ -1,12 +1,10 @@
-// This is Webpack-only; do NOT import this file from code Vite parses.
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import workerURL from 'worker-loader?inline=no-fallback&esModule=true&type=module!./graph-worker.js';
+import GraphWorker from './graph-worker.js'; // processed by worker-loader rule
 
 // src/utils/worker.blob.js
 const isTest = typeof jest !== 'undefined';
 
-const createWorker = () =>
-  new Worker(workerURL, { type: 'module', name: 'graph-worker' });
+const createWorker = () => new GraphWorker(); // options are set via loader `worker:{…}`
 
 const createMockWorker = (factory) => {
   if (!isTest) {
