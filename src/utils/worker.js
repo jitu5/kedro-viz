@@ -1,24 +1,13 @@
+// IMPORTANT: this import is resolved by Webpack at lib build time.
+// It bundles the worker and returns a **Blob URL string** at runtime.
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import workerURL from 'worker-loader?inline=no-fallback&esModule=true&type=module!./graph-worker.js';
+
 // Check for test environment
 const isTest = typeof jest !== 'undefined';
-
-let workerOverrideURL = null;
-export function setWorkerURL(url) {
-  console.log('[kedro-viz] setWorkerURL called with', url);
-  workerOverrideURL = url;
-}
-
 const createWorker = () => {
-  if (workerOverrideURL) {
-    // absolute, same-origin webview URL provided by the extension
-    return new Worker(workerOverrideURL, {
-      type: 'module',
-      name: 'graph-worker',
-    });
-  }
-  // default path for bundlers (Vite/Webpack) in normal web apps
-  return new Worker(new URL('./graph-worker.js', import.meta.url), {
-    type: 'module',
-  });
+  // Blob URL (same-origin) – no import.meta.url, no external fetch
+  return new Worker(workerURL, { type: 'module', name: 'graph-worker' });
 };
 
 /**
@@ -33,7 +22,8 @@ const createMockWorker = (workerModule) => {
     const mockWorker = {
       terminate: () => {},
       postMessage: async (payload) => {
-        const fn = workerModule.graph || workerModule.default || (() => {});
+        const impl = require('./graph-worker.js');
+        const fn = impl.graph || impl.default || (() => {});
         const result = await fn(payload);
         // Simulate async message
         setTimeout(() => {

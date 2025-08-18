@@ -1,6 +1,6 @@
 {
   "name": "kedro-vi122",
-  "version": "1.21.0-rc20",
+  "version": "1.21.0-rc21",
   "description": "Kedro-Viz is an interactive development tool for building data science pipelines with Kedro.",
   "main": "lib/components/app/index.js",
   "files": [
@@ -20,7 +20,7 @@
     "start": "REACT_APP_DATA_SOURCE=$DATA NODE_OPTIONS=\"--dns-result-order=ipv4first\" npm-run-all -p dev start:lib",
     "start:dev": "rm -rf node_modules/.cache && npm run start",
     "start:lib": "rm -rf lib && babel src --out-dir lib --copy-files --watch",
-    "lib": "npm-run-all -s lib:clean lib:copy lib:webpack lib:babel lib:prune",
+    "lib": "npm-run-all -s lib:clean lib:copy lib:babel lib:webpack lib:prune",
     "lib:clean": "rm -rf lib",
     "lib:copy": "cp -rf src lib",
     "lib:webpack": "webpack --config webpack.lib.js",
@@ -142,7 +142,8 @@
     "stylelint-prettier": "^1.2.0",
     "vite": "^6.3.5",
     "webpack-cli": "^4.7.2",
-    "whatwg-fetch": "^3.6.20"
+    "whatwg-fetch": "^3.6.20",
+    "worker-loader": "^3.0.8"
   },
   "husky": {
     "hooks": {

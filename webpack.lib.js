@@ -25,16 +25,29 @@ const rules = [
     ],
     sideEffects: true,
   },
+  {
+    test: /graph-worker\.js$/,     // only the worker file
+    use: [
+      {
+        loader: 'worker-loader',
+        options: {
+          inline: 'no-fallback',   // emit Blob URL (no file)
+          esModule: true,
+          type: 'module',          // module worker
+        },
+      }
+    ]
+  }
 ];
 
 module.exports = [
   // 1. Bundle the main Kedro-Viz lib
   {
     mode: 'production',
-    entry: './lib/components/app/index.js',
+     entry: { 'components/app/index': './src/components/app/index.js' },
     output: {
       path: path.resolve(__dirname, 'lib'),
-      filename: 'index.js',
+      filename: '[name].js',
       libraryTarget: 'commonjs2',
     },
     module: {
