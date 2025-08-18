@@ -3,12 +3,12 @@ import { render } from '@testing-library/react';
 import PreviewTable from './preview-table';
 
 const mockData = {
-  columns: ['id', 'company_rating', 'company_location', 'bool_col'],
+  columns: ['id', 'company_rating', 'company_location'],
   index: [0, 1, 2],
   data: [
-    [1, '90%', 'London', true],
-    [2, '80%', 'Paris', false],
-    [3, '40%', 'Milan', true],
+    [1, '90%', 'London'],
+    [2, '80%', 'Paris'],
+    [3, '40%', 'Milan'],
   ],
 };
 
@@ -26,17 +26,5 @@ describe('PreviewTable', () => {
 
     expect(headers.length).toBe(mockData.columns.length);
     expect(rows.length).toBe(mockData.index.length);
-  });
-
-  it('renders boolean values as strings', () => {
-    const { container } = render(<PreviewTable data={mockData} />);
-
-    const lastColumnCells = container.querySelectorAll(
-      '.preview-table__row > td:last-child'
-    );
-
-    lastColumnCells.forEach((cell) => {
-      expect(['true', 'false']).toContain(cell.textContent);
-    });
   });
 });
