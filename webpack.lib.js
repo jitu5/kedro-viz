@@ -56,6 +56,11 @@ module.exports = [
     resolve: {
       extensions: ['.js', '.jsx'],
     },
+    alias: {
+        // Replace the Vite-friendly worker with the blob worker ONLY in this build
+        [path.resolve(__dirname, 'src/utils/worker.js')]:
+          path.resolve(__dirname, 'src/utils/worker.blob.js'),
+    },
     plugins: [
       new MiniCssExtractPlugin({
         filename: 'styles/styles.min.css',

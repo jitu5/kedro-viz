@@ -1,41 +1,32 @@
-// Check for test environment
+// This is Webpack-only; do NOT import this file from code Vite parses.
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import workerURL from 'worker-loader?inline=no-fallback&esModule=true&type=module!./graph-worker.js';
+
+// src/utils/worker.blob.js
 const isTest = typeof jest !== 'undefined';
 
-const createWorker = () => {
-  return new Worker(new URL('./graph-worker.js', import.meta.url), {
-    type: 'module',
-  });
-};
+const createWorker = () =>
+  new Worker(workerURL, { type: 'module', name: 'graph-worker' });
 
-/**
- * Emulate a worker for tests
- */
-const createMockWorker = (workerModule) => {
+const createMockWorker = (factory) => {
   if (!isTest) {
-    return workerModule;
+    return factory;
   }
-
   return () => {
     const mockWorker = {
       terminate: () => {},
-      postMessage: async (payload) => {
-        const fn = workerModule.graph || workerModule.default || (() => {});
-        const result = await fn(payload);
-        // Simulate async message
-        setTimeout(() => {
-          if (typeof mockWorker.onmessage === 'function') {
-            mockWorker.onmessage({ data: result });
-          }
-        }, 0);
-      },
       onmessage: null,
+      postMessage: async (payload) => {
+        const impl = require('./graph-worker.js');
+        const fn = impl.graph || impl.default || (() => undefined);
+        const result = await fn(payload);
+        setTimeout(() => mockWorker.onmessage?.({ data: result }), 0);
+      },
     };
-
     return mockWorker;
   };
 };
 
-// Export the worker
 export const graph = createMockWorker(createWorker);
 
 /**
