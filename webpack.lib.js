@@ -32,12 +32,6 @@ const rules = [
      options: {
        inline: 'no-fallback',      // creates a Blob-backed worker (no file fetch)
        esModule: true,             // default is true; explicit is fine
-       worker: {
-         type: 'module',           // module worker
-         options: {                // ✅ WorkerOptions go here
-           name: 'graph-worker',
-         },
-       },
      },
    },
   },
