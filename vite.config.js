@@ -7,6 +7,9 @@ export default defineConfig({
     'process.env': {},
   },
   plugins: [react()],
+  resolve: {
+    dedupe: ['react', 'react-dom'],  // ensure single instance
+  },
   server: {
     port: 4141,
     proxy: {

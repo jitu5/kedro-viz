@@ -51,7 +51,20 @@ module.exports = [
       filename: '[name].js', // → lib/components/app/index.js
       libraryTarget: 'commonjs2', // keep your CJS entry surface
     },
-
+    externals: {
+      react: {
+        commonjs: 'react',
+        commonjs2: 'react',
+        amd: 'react',
+        root: 'React',        // for UMD consumers (harmless here)
+      },
+      'react-dom': {
+        commonjs: 'react-dom',
+        commonjs2: 'react-dom',
+        amd: 'react-dom',
+        root: 'ReactDOM',
+      },
+    },
     module: { rules },
 
     resolve: {
