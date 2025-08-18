@@ -8,7 +8,10 @@ const rules = [
     use: {
       loader: 'babel-loader',
       options: {
-        presets: ['@babel/preset-env', '@babel/preset-react'],
+        presets: [
+          ['@babel/preset-env', { modules: false }],
+          '@babel/preset-react',
+        ],
       },
     },
   },
@@ -16,55 +19,53 @@ const rules = [
     test: /\.scss$/,
     use: [
       MiniCssExtractPlugin.loader,
-      {
-        loader: 'css-loader',
-        options: { importLoaders: 1 },
-      },
+      { loader: 'css-loader', options: { importLoaders: 1 } },
       'postcss-loader',
       'sass-loader',
     ],
     sideEffects: true,
   },
   {
-    test: /graph-worker\.js$/,     // only the worker file
+    test: /graph-worker\.js$/,
     use: [
       {
         loader: 'worker-loader',
-        options: {
-          inline: 'no-fallback',   // emit Blob URL (no file)
-          esModule: true,
-          type: 'module',          // module worker
-        },
-      }
-    ]
-  }
+        options: { inline: 'no-fallback', esModule: true, type: 'module' },
+      },
+    ],
+  },
 ];
 
 module.exports = [
-  // 1. Bundle the main Kedro-Viz lib
   {
     mode: 'production',
-     entry: { 'components/app/index': './src/components/app/index.js' },
+
+    // IMPORTANT: build from src so aliasing works
+    entry: {
+      'components/app/index': './src/components/app/index.js',
+    },
+
     output: {
       path: path.resolve(__dirname, 'lib'),
-      filename: '[name].js',
-      libraryTarget: 'commonjs2',
+      filename: '[name].js', // → lib/components/app/index.js
+      libraryTarget: 'commonjs2', // keep your CJS entry surface
     },
-    module: {
-      rules,
-    },
+
+    module: { rules },
+
     resolve: {
       extensions: ['.js', '.jsx'],
+
+      // ✅ FIX: alias belongs here, not top-level
+      // Map the Vite-friendly worker wrapper → Blob wrapper ONLY for this build
+      alias: {
+        [path.resolve(__dirname, 'src/utils/worker.js')]: path.resolve(
+          __dirname,
+          'src/utils/worker.blob.js'
+        ),
+      },
     },
-    alias: {
-        // Replace the Vite-friendly worker with the blob worker ONLY in this build
-        [path.resolve(__dirname, 'src/utils/worker.js')]:
-          path.resolve(__dirname, 'src/utils/worker.blob.js'),
-    },
-    plugins: [
-      new MiniCssExtractPlugin({
-        filename: 'styles/styles.min.css',
-      }),
-    ],
+
+    plugins: [new MiniCssExtractPlugin({ filename: 'styles/styles.min.css' })],
   },
 ];
