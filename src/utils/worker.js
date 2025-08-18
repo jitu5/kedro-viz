@@ -1,7 +1,20 @@
 // Check for test environment
 const isTest = typeof jest !== 'undefined';
 
+let workerOverrideURL = null;
+export function setWorkerURL(url) {
+  workerOverrideURL = url;
+}
+
 const createWorker = () => {
+  if (workerOverrideURL) {
+    // absolute, same-origin webview URL provided by the extension
+    return new Worker(workerOverrideURL, {
+      type: 'module',
+      name: 'graph-worker',
+    });
+  }
+  // default path for bundlers (Vite/Webpack) in normal web apps
   return new Worker(new URL('./graph-worker.js', import.meta.url), {
     type: 'module',
   });
