@@ -30,11 +30,13 @@ const rules = [
    use: {
      loader: 'worker-loader',
      options: {
-       inline: 'no-fallback',     // inline as Blob (no file fetch)
-       esModule: true,            // ESM export
-       worker: {                  // <-- options for the Worker constructor
-         type: 'module',
-         name: 'graph-worker',
+       inline: 'no-fallback',      // creates a Blob-backed worker (no file fetch)
+       esModule: true,             // default is true; explicit is fine
+       worker: {
+         type: 'module',           // module worker
+         options: {                // ✅ WorkerOptions go here
+           name: 'graph-worker',
+         },
        },
      },
    },
