@@ -1,6 +1,6 @@
 {
   "name": "kedro-vi122",
-  "version": "1.21.0-rc24",
+  "version": "1.21.0-rc25",
   "description": "Kedro-Viz is an interactive development tool for building data science pipelines with Kedro.",
   "main": "lib/components/app/index.js",
   "files": [
@@ -25,8 +25,8 @@
     "lib:copy": "cp -rf src lib",
     "lib:webpack": "webpack --config webpack.lib.js",
     "lib:babel": "BABEL_ENV=lib babel lib --out-dir lib",
-     "lib:vite": "vite build --config vite.lib.config.js",
-    "lib:prune": "find lib -type f -name '*.test.*' -delete && find lib -type f -name '*.scss' -delete && find lib -type f -name '*.jsx' -delete",
+    "lib:vite": "vite build --config vite.lib.config.js",
+    "lib:prune": "find lib -type f -name '*.test.*' -delete && find lib -type f -name '*.scss' -delete && find lib -type f -name '*.jsx' -delete && rm -f lib/utils/worker.js lib/utils/worker.blob.js lib/utils/graph-worker.js",
     "lib-test": "npm-run-all -s lib lib-test:setup lib-test:serve",
     "lib-test:setup": "node ./tools/test-lib/setup.js",
     "lib-test:serve": "node ./tools/test-lib/serve.js",
