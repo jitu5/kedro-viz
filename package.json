@@ -1,8 +1,17 @@
 {
   "name": "kedro-vi122",
-  "version": "1.21.0-rc26",
+  "version": "1.21.0-rc27",
   "description": "Kedro-Viz is an interactive development tool for building data science pipelines with Kedro.",
   "main": "lib/components/app/index.js",
+  "module": "lib/components/app/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./lib/components/app/index.mjs",
+      "require": "./lib/components/app/index.js"
+    },
+    "./lib/styles/styles.min.css": "./lib/styles/styles.min.css",
+    "./lib/utils/data/*": "./lib/utils/data/*"
+  },
   "files": [
     "lib"
   ],
@@ -178,11 +187,6 @@
       "^(.*)\\?worker&inline$": "$1"
     },
     "maxWorkers": 5
-  },
-  "exports": {
-    ".": "./lib/components/app/index.js",
-    "./lib/styles/styles.min.css": "./lib/styles/styles.min.css",
-    "./lib/utils/data/*": "./lib/utils/data/*"
   },
   "browserslist": [
     ">0.2%",
