@@ -174,7 +174,8 @@
       "/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)"
     ],
     "moduleNameMapper": {
-      "\\.(css|scss)$": "identity-obj-proxy"
+      "\\.(css|scss)$": "identity-obj-proxy",
+      "^(.*)\\?worker&inline$": "$1"
     },
     "maxWorkers": 5
   },
