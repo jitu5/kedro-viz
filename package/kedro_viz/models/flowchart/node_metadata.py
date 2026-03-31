@@ -67,6 +67,12 @@ class TaskNodeMetadata(GraphNodeMetadata):
         default=None, validate_default=True, description="The outputs from the TaskNode"
     )
 
+    preview: Optional[Dict] = Field(
+        default=None,
+        validate_default=True,
+        description="Serialized preview payload of the TaskNode",
+    )
+
     @model_validator(mode="before")
     @classmethod
     def check_task_node_exists(cls, values):
@@ -83,8 +89,13 @@ class TaskNodeMetadata(GraphNodeMetadata):
     @classmethod
     def set_code(cls, code):
         # this is required to handle partial, curry functions
-        if inspect.isfunction(cls.kedro_node.func):
-            code = inspect.getsource(_extract_wrapped_func(cls.kedro_node.func))
+        func = cls.kedro_node.func
+
+        if inspect.ismethod(func):
+            func = func.__func__
+
+        if inspect.isfunction(func):
+            code = inspect.getsource(_extract_wrapped_func(func))
             return code
 
         return None
@@ -93,10 +104,13 @@ class TaskNodeMetadata(GraphNodeMetadata):
     @classmethod
     def set_filepath(cls, filepath):
         # this is required to handle partial, curry functions
-        if inspect.isfunction(cls.kedro_node.func):
-            code_full_path = (
-                Path(inspect.getfile(cls.kedro_node.func)).expanduser().resolve()
-            )
+        func = cls.kedro_node.func
+
+        if inspect.ismethod(func):
+            func = func.__func__
+
+        if inspect.isfunction(func):
+            code_full_path = Path(inspect.getfile(func)).expanduser().resolve()
 
             try:
                 filepath = code_full_path.relative_to(Path.cwd().parent)
@@ -129,6 +143,53 @@ class TaskNodeMetadata(GraphNodeMetadata):
     @classmethod
     def set_outputs(cls, _):
         return cls.kedro_node.outputs
+
+    @field_validator("preview")
+    @classmethod
+    def set_preview(cls, _):
+        try:
+            task_node_preview_fn = getattr(cls.kedro_node, "preview", None)
+
+            # for Kedro versions that do not support preview_fn
+            if task_node_preview_fn is None:  # pragma: no cover
+                return None
+
+            preview_payload = task_node_preview_fn()
+
+            if preview_payload is None:
+                return None
+
+            from kedro.pipeline.preview_contract import (
+                ImagePreview,
+                MermaidPreview,
+                TextPreview,
+            )
+
+            if not isinstance(
+                preview_payload, (TextPreview, MermaidPreview, ImagePreview)
+            ):
+                return None
+
+            # serialized payload
+            return preview_payload.to_dict()
+
+        except ImportError:  # pragma: no cover
+            if not getattr(cls.set_preview, "_import_warning_shown", False):
+                logger.warning(
+                    "Task node previews are disabled because this Kedro version "
+                    "does not provide 'kedro.pipeline.preview_contract'."
+                )
+                cls.set_preview._import_warning_shown = True
+            return None
+
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(
+                "'%s' could not be previewed. Full exception: %s: %s",
+                cls.task_node.name,
+                type(exc).__name__,
+                exc,
+            )
+            return None
 
 
 class DataNodeMetadata(GraphNodeMetadata):

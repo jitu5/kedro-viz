@@ -6,14 +6,30 @@ Please follow the established format:
 - Include the ID number for the related PR (or PRs) in parentheses
 -->
 
-# Release xxx
+# Release 12.3.0
 
 ## Major features and improvements
- -  Introduced custom colours support for nodes and datasets. (#2487,#2488,#2495)
- - Dropped support for Python 3.9 (EOL Oct 2025). Minimum supported version is now 3.10. (#2511)
+ - Support for node previews (mermaid, text and image). (#2554)
 
 ## Bug fixes and other changes
+ - Fix compatibility fallback for `importlib_metadata` imports. (#2545)
+ 
+# Release 12.2.0
+
+## Major features and improvements
+ - Introduced custom colours support for nodes and datasets. (#2487,#2488,#2495)
+ - Dropped support for Python 3.9 (EOL Oct 2025). Minimum supported version is now 3.10. (#2511)
+ 
+## Bug fixes and other changes
  - Add HTML preview support for text/markdown datasets. (#2490)
+ - Display source metadata for task nodes defined as bound methods. (#2510)
+ - Migrate ESM bundling to vite from webpack. (#2521)
+ - Fixed issues with accessing remote file size in PipelineRunStatusHook. (#2527)
+
+## Community contributions
+
+Many thanks to the following Kedroids for contributing PR to this release:
+* [MalikAly](https://github.com/MalikAly)
 
 # Release 12.1.0
 
