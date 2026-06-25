@@ -57,11 +57,7 @@ import {
   DrawLayersGroup,
   GraphSVG,
 } from '../draw';
-import {
-  createNodeStateMap,
-  processNodeStyles,
-  isSizeStable,
-} from './flowchart-utils';
+import { createNodeStateMap, processNodeStyles } from './flowchart-utils';
 import {
   DURATION,
   MARGIN,
@@ -72,6 +68,7 @@ import {
   SIZE_STABILITY_TOLERANCE,
 } from '../draw/utils/config';
 import { requestFrame, cancelFrame } from '../../utils/animation-frame';
+import { isSizeStable } from '../../utils/size-utils';
 
 import './styles/flowchart.scss';
 

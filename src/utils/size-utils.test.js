@@ -1,4 +1,4 @@
-import { isSizeStable } from './flowchart-utils';
+import { isSizeStable } from './size-utils';
 
 describe('isSizeStable', () => {
   const tolerance = 0.5;
