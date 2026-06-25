@@ -10,6 +10,7 @@ import {
 } from './disabled';
 import getShortType from '../utils/short-type';
 import { getNodeRank } from './ranks';
+import { nodeTextWidthCharEstimate } from '../config';
 
 export const getNodeName = (state) => state.node.name;
 export const getNodeFullName = (state) => state.node.fullName;
@@ -352,8 +353,14 @@ export const getNodeTextWidth = createSelector(
       .append('text')
       .text((nodeID) => nodeLabel[nodeID])
       .each(function (nodeID) {
-        const width = this.getBBox ? this.getBBox().width : 0;
-        nodeTextWidth[nodeID] = width;
+        const measuredWidth = this.getBBox ? this.getBBox().width : 0;
+        // getBBox() returns 0 when the chart is mounted while not rendered
+        // (e.g. inside a display:none container or a not-yet-visible iframe),
+        // which would otherwise collapse node boxes to icon-only width. Fall
+        // back to a character-based estimate so labels stay readable.
+        const label = nodeLabel[nodeID] || '';
+        nodeTextWidth[nodeID] =
+          measuredWidth || label.length * nodeTextWidthCharEstimate;
       });
     svg.remove();
     return nodeTextWidth;
