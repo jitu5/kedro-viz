@@ -57,8 +57,21 @@ import {
   DrawLayersGroup,
   GraphSVG,
 } from '../draw';
-import { createNodeStateMap, processNodeStyles } from './flowchart-utils';
-import { DURATION, MARGIN, MIN_SCALE, MAX_SCALE } from '../draw/utils/config';
+import {
+  createNodeStateMap,
+  processNodeStyles,
+  isSizeStable,
+} from './flowchart-utils';
+import {
+  DURATION,
+  MARGIN,
+  MIN_SCALE,
+  MAX_SCALE,
+  STABLE_SIZE_FRAME_COUNT,
+  MAX_STABLE_SIZE_ATTEMPTS,
+  SIZE_STABILITY_TOLERANCE,
+} from '../draw/utils/config';
+import { requestFrame, cancelFrame } from '../../utils/animation-frame';
 
 import './styles/flowchart.scss';
 
@@ -107,10 +120,13 @@ export class FlowChart extends Component {
     this.nodeStyleOverridesCache = null;
     this.prevNodesForStyles = null;
     this.prevThemeForStyles = null;
+    this.chartSizeFrame = null;
+    this.stableSizeFrame = null;
   }
 
   componentDidMount() {
     this.updateChartSize();
+    this.waitForStableChartSize();
 
     this.view = viewing({
       container: this.svgRef,
@@ -145,6 +161,8 @@ export class FlowChart extends Component {
   }
 
   componentWillUnmount() {
+    this.cancelChartSizeFrame();
+    this.cancelStableSizeFrame();
     this.removeGlobalEventListeners();
   }
 
@@ -234,19 +252,103 @@ export class FlowChart extends Component {
   }
 
   /**
+   * Schedules a single chart size update on the next animation frame, coalescing
+   * rapid resize / ResizeObserver callbacks into one measurement per frame.
+   */
+  scheduleChartSizeUpdate() {
+    if (this.chartSizeFrame !== null) {
+      return;
+    }
+
+    this.chartSizeFrame = requestFrame(() => {
+      this.chartSizeFrame = null;
+      this.updateChartSize();
+    });
+  }
+
+  /**
+   * Cancels any pending scheduled chart size update frame.
+   */
+  cancelChartSizeFrame() {
+    if (this.chartSizeFrame !== null) {
+      cancelFrame(this.chartSizeFrame);
+      this.chartSizeFrame = null;
+    }
+  }
+
+  /**
+   * Re-measures and commits the chart size once the container has settled to a
+   * stable, non-zero size. Embedded hosts (e.g. an iframe inside a notebook or
+   * dashboard) often have not finished sizing the container at mount, so the
+   * first getBoundingClientRect() read can latch a transient or zero size into
+   * the zoom-to-fit that otherwise only self-corrects on a manual resize.
+   * Polling via requestAnimationFrame until the size stabilizes performs that
+   * correction automatically; the ResizeObserver continues to handle genuine
+   * later resizes.
+   * @param {number} attempt Poll attempt, bounded by MAX_STABLE_SIZE_ATTEMPTS.
+   * @param {Object} previousSize The size observed on the previous frame.
+   * @param {number} stableFrames Consecutive frames the size has been stable.
+   */
+  waitForStableChartSize(
+    attempt = 0,
+    previousSize = { width: -1, height: -1 },
+    stableFrames = 0
+  ) {
+    const element = this.containerRef.current;
+    if (!element) {
+      return;
+    }
+
+    const { width, height } = element.getBoundingClientRect();
+    const sizeIsStable = isSizeStable(
+      { width, height },
+      previousSize,
+      SIZE_STABILITY_TOLERANCE
+    );
+    const nextStableFrames = sizeIsStable ? stableFrames + 1 : 0;
+
+    if (
+      nextStableFrames >= STABLE_SIZE_FRAME_COUNT ||
+      attempt >= MAX_STABLE_SIZE_ATTEMPTS
+    ) {
+      this.stableSizeFrame = null;
+      this.updateChartSize();
+      return;
+    }
+
+    this.stableSizeFrame = requestFrame(() =>
+      this.waitForStableChartSize(
+        attempt + 1,
+        { width, height },
+        nextStableFrames
+      )
+    );
+  }
+
+  /**
+   * Cancels any pending stable-size polling frame.
+   */
+  cancelStableSizeFrame() {
+    if (this.stableSizeFrame !== null) {
+      cancelFrame(this.stableSizeFrame);
+      this.stableSizeFrame = null;
+    }
+  }
+
+  /**
    * Add window event listeners on mount
    */
   addGlobalEventListeners() {
     // Add ResizeObserver to listen for any changes in the container's width/height
-    // (with event listener fallback)
     if (window.ResizeObserver) {
       this.resizeObserver =
         this.resizeObserver ||
         new window.ResizeObserver(this.handleWindowResize);
       this.resizeObserver.observe(this.containerRef.current);
-    } else {
-      window.addEventListener('resize', this.handleWindowResize);
     }
+    // Listen to window resize as well because iframe hosts can resize the inner
+    // window without reliably delivering a container ResizeObserver callback.
+    window.addEventListener('resize', this.handleWindowResize);
     // Print event listeners
     window.addEventListener('beforeprint', this.handleBeforePrint);
     window.addEventListener('afterprint', this.handleAfterPrint);
@@ -257,11 +359,10 @@ export class FlowChart extends Component {
    */
   removeGlobalEventListeners() {
     // ResizeObserver
-    if (window.ResizeObserver) {
+    if (window.ResizeObserver && this.resizeObserver) {
       this.resizeObserver.unobserve(this.containerRef.current);
-    } else {
-      window.removeEventListener('resize', this.handleWindowResize);
     }
+    window.removeEventListener('resize', this.handleWindowResize);
     // Print event listeners
     window.removeEventListener('beforeprint', this.handleBeforePrint);
     window.removeEventListener('afterprint', this.handleAfterPrint);
@@ -271,7 +372,7 @@ export class FlowChart extends Component {
    * Handle window resize
    */
   handleWindowResize = () => {
-    this.updateChartSize();
+    this.scheduleChartSizeUpdate();
   };
 
   /**

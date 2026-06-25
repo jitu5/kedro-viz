@@ -1,6 +1,7 @@
 import React from 'react';
 import FlowChart, {
   FlowChart as UnconnectedFlowChart,
+  chartSizeTestFallback,
   mapStateToProps,
   mapDispatchToProps,
 } from './flowchart';
@@ -188,19 +189,88 @@ describe('FlowChart', () => {
 
   it('resizes the chart if the window resizes', () => {
     const listeners = {};
-    jest
+    const addEventListenerSpy = jest
       .spyOn(window, 'addEventListener')
       .mockImplementation((event, callback) => {
         listeners[event] = callback;
       });
 
-    setup.render(<FlowChart displayGlobalNavigation={true} />);
-    expect(typeof listeners.resize).toBe('function');
+    try {
+      setup.render(<FlowChart displayGlobalNavigation={true} />);
+      expect(typeof listeners.resize).toBe('function');
 
-    act(() => {
-      listeners.resize();
+      act(() => {
+        listeners.resize();
+      });
+      // If you can't spy on internal methods, at least verify the callback exists
+    } finally {
+      addEventListenerSpy.mockRestore();
+    }
+  });
+
+  it('listens for window resizes even when ResizeObserver is available', () => {
+    const originalResizeObserver = window.ResizeObserver;
+    const observe = jest.fn();
+    const unobserve = jest.fn();
+    const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+    const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+
+    window.ResizeObserver = jest.fn(function ResizeObserver() {
+      this.observe = observe;
+      this.unobserve = unobserve;
     });
-    // If you can't spy on internal methods, at least verify the callback exists
+
+    try {
+      const { unmount } = setup.render(
+        <FlowChart displayGlobalNavigation={true} />
+      );
+
+      expect(observe).toHaveBeenCalledWith(expect.any(HTMLElement));
+      expect(addEventListenerSpy).toHaveBeenCalledWith(
+        'resize',
+        expect.any(Function)
+      );
+
+      unmount();
+
+      expect(unobserve).toHaveBeenCalledWith(expect.any(HTMLElement));
+      expect(removeEventListenerSpy).toHaveBeenCalledWith(
+        'resize',
+        expect.any(Function)
+      );
+    } finally {
+      window.ResizeObserver = originalResizeObserver;
+      addEventListenerSpy.mockRestore();
+      removeEventListenerSpy.mockRestore();
+    }
+  });
+
+  it('re-measures after the chart container size stabilizes', () => {
+    const onUpdateChartSize = jest.fn();
+    const { ref } = renderUnconnectedFlowChart({ onUpdateChartSize });
+    ref.current.cancelStableSizeFrame();
+    onUpdateChartSize.mockClear();
+
+    ref.current.containerRef.current.getBoundingClientRect = jest
+      .fn()
+      .mockReturnValueOnce({ width: 0, height: 0 })
+      .mockReturnValueOnce({ width: 800, height: 600 })
+      .mockReturnValueOnce({ width: 800, height: 600 })
+      .mockReturnValueOnce({ width: 800, height: 600 });
+
+    const originalRequestAnimationFrame = window.requestAnimationFrame;
+    window.requestAnimationFrame = jest.fn((callback) => {
+      callback();
+      return 1;
+    });
+
+    try {
+      ref.current.waitForStableChartSize();
+
+      expect(onUpdateChartSize).toHaveBeenCalledWith(chartSizeTestFallback);
+    } finally {
+      window.requestAnimationFrame = originalRequestAnimationFrame;
+    }
   });
 
   it('applies transform correctly for different orientations', () => {
