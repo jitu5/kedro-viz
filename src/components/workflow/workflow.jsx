@@ -242,30 +242,8 @@ export class Workflow extends Component {
       '.pipeline-workflow__zoom-wrapper--animating',
       true
     );
-    // Update layer label y positions
-    if (this.layerNamesRef?.current) {
-      const layerNames = this.layerNamesRef.current.querySelectorAll(
-        '.pipeline-layer-name'
-      );
-      if (layerNames.length !== this.props.layers.length) {
-        // If all layer labels are rendered yet; defer the update
-        setTimeout(() => this.onViewChange(transform), 0);
-        return;
-      }
-      this.props.layers.forEach((layer, i) => {
-        const el = layerNames[i];
-        if (!el) {
-          return;
-        }
-        if (this.props.orientation === 'vertical') {
-          const updateY = y + (layer.y + (layer.height || 0) / 2) * scale;
-          el.style.transform = `translateY(${updateY}px)`;
-        } else {
-          const updateX = x + (layer.x + (layer.width || 0) / 2) * scale;
-          el.style.transform = `translateX(${updateX}px) translateX(-50%)`;
-        }
-      });
-    }
+    // Update layer label positions
+    this.positionLayerNames(transform);
 
     // Update extents
     this.updateViewExtents(transform);
@@ -293,6 +271,45 @@ export class Workflow extends Component {
       false
     );
   }
+
+  /**
+   * Position the layer name labels for the given view transform.
+   * @param {Object} transform The current view transform
+   */
+  positionLayerNames(transform) {
+    if (!this.layerNamesRef?.current) {
+      return;
+    }
+    const { k: scale, x, y } = transform;
+    const layerNames = this.layerNamesRef.current.querySelectorAll(
+      '.pipeline-layer-name'
+    );
+    this.props.layers.forEach((layer, i) => {
+      const el = layerNames[i];
+      if (!el) {
+        return;
+      }
+      if (this.props.orientation === 'vertical') {
+        const updateY = y + (layer.y + (layer.height || 0) / 2) * scale;
+        el.style.transform = `translateY(${updateY}px)`;
+      } else {
+        const updateX = x + (layer.x + (layer.width || 0) / 2) * scale;
+        el.style.transform = `translateX(${updateX}px) translateX(-50%)`;
+      }
+    });
+  }
+
+  /**
+   * Re-applies layer label positions once the labels have been (re)rendered.
+   * The label elements are created in a post-paint effect, so the first
+   * onViewChange can run before they exist; positioning them here ensures they
+   * land correctly without requiring a manual resize.
+   */
+  handleLayerNamesRendered = () => {
+    if (this.view) {
+      this.positionLayerNames(getViewTransform(this.view));
+    }
+  };
 
   /**
    * Updates view extents based on the current view transform.
@@ -739,6 +756,7 @@ export class Workflow extends Component {
               chartSize={chartSize}
               orientation={orientation}
               layerNamesRef={this.layerNamesRef}
+              onLayersRendered={this.handleLayerNamesRendered}
             />
             <RunStatusNotification
               status={pipelineStatus.status}
