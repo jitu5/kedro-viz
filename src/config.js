@@ -43,12 +43,6 @@ export const nodeListRowHeight = 32;
 
 export const chartMinWidthScale = 0.25;
 
-// Estimated width (px) per character for node labels, used to size node boxes
-// when exact measurement via SVG getBBox() is unavailable — e.g. the chart is
-// mounted inside a display:none container or a not-yet-visible iframe, where
-// getBBox() returns 0. Matches the per-character heuristic in the graph worker.
-export const nodeTextWidthCharEstimate = 7;
-
 // Determine the number of nodes and edges in pipeline to trigger size warning
 export const largeGraphThreshold = 1000;
 

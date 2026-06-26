@@ -226,6 +226,18 @@ export function updateZoom(zoom) {
   };
 }
 
+export const INCREMENT_NODE_MEASURE_TOKEN = 'INCREMENT_NODE_MEASURE_TOKEN';
+
+/**
+ * Bump a token that forces node label widths to be re-measured, e.g. once the
+ * chart becomes visible or the web font finishes loading.
+ */
+export function incrementNodeMeasureToken() {
+  return {
+    type: INCREMENT_NODE_MEASURE_TOKEN,
+  };
+}
+
 export const TOGGLE_MINIMAP = 'TOGGLE_MINIMAP';
 
 /**

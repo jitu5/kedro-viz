@@ -1,5 +1,4 @@
 import { mockState } from '../utils/state.mock';
-import { nodeTextWidthCharEstimate } from '../config';
 import { getPipelineNodeIDs } from './pipeline';
 import {
   getNodeActive,
@@ -301,18 +300,8 @@ describe('getNodeTextWidth', () => {
     expect(values.every((value) => typeof value === 'number')).toBe(true);
   });
 
-  it('falls back to a character-based estimate when getBBox is unavailable', () => {
-    // Without SVG layout (jsdom, or a chart mounted while display:none)
-    // getBBox() returns 0; width is estimated from the label length so node
-    // boxes do not collapse to icon-only width.
-    const labels = getNodeLabel(mockState.spaceflights);
-    expect(
-      Object.keys(nodeTextWidth).every(
-        (id) =>
-          nodeTextWidth[id] ===
-          (labels[id] || '').length * nodeTextWidthCharEstimate
-      )
-    ).toBe(true);
+  it('returns width=0 if svg getBBox is not supported', () => {
+    expect(values.every((value) => value === 0)).toBe(true);
   });
 });
 
