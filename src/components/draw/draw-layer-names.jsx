@@ -13,7 +13,6 @@ export function DrawLayerNames({
   orientation = 'vertical',
   layerNameDuration = 400,
   layerNamesRef,
-  onLayersRendered,
 }) {
   useEffect(() => {
     if (!layerNamesRef?.current || !layers.length) {
@@ -68,19 +67,7 @@ export function DrawLayerNames({
     // UPDATE
     const allNames = layerNameElement.merge(enterLayerNames);
     allNames.text((d) => d.name).style('opacity', 0.55);
-
-    // The label elements were just (re)created in the DOM. Notify the parent so
-    // it can position them for the current view transform — the initial
-    // onViewChange can run before these elements exist (e.g. on first paint).
-    onLayersRendered && onLayersRendered();
-  }, [
-    layers,
-    chartSize,
-    orientation,
-    layerNameDuration,
-    layerNamesRef,
-    onLayersRendered,
-  ]);
+  }, [layers, chartSize, orientation, layerNameDuration, layerNamesRef]);
 
   return null;
 }
@@ -92,7 +79,6 @@ export function DrawLayerNamesGroup({
   displayGlobalNavigation,
   displaySidebar,
   layerNamesRef,
-  onLayersRendered,
 }) {
   if (!layers.length) {
     return null;
@@ -112,7 +98,6 @@ export function DrawLayerNamesGroup({
         chartSize={chartSize}
         orientation={orientation}
         layerNamesRef={layerNamesRef}
-        onLayersRendered={onLayersRendered}
       />
     </ul>
   );
