@@ -335,11 +335,21 @@ export const getGroupedNodes = createSelector([getNodeData], (nodes) =>
 );
 
 /**
+ * A token that, when incremented, forces node label widths to be re-measured.
+ * Bumped once the chart is actually rendered and the web font has loaded (see
+ * createNodeRemeasurer / incrementNodeMeasureToken), so the getBBox measurement
+ * below is taken under reliable conditions.
+ */
+const getNodeMeasureToken = (state) => state.nodeMeasureToken;
+
+/**
  * Temporarily create a new SVG container in the DOM, write a node to it,
- * measure its width with getBBox, then delete the container and store the value
+ * measure its width with getBBox, then delete the container and store the value.
+ * getNodeMeasureToken is an input only to bust the memo, so the measurement
+ * re-runs when the chart first becomes renderable / the font finishes loading.
  */
 export const getNodeTextWidth = createSelector(
-  [getPipelineNodeIDs, getNodeLabel],
+  [getPipelineNodeIDs, getNodeLabel, getNodeMeasureToken],
   (nodeIDs, nodeLabel) => {
     const nodeTextWidth = {};
     const svg = select(document.body)
