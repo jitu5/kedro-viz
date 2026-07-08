@@ -59,6 +59,7 @@ import {
 } from '../draw';
 import { createNodeStateMap, processNodeStyles } from './flowchart-utils';
 import { DURATION, MARGIN, MIN_SCALE, MAX_SCALE } from '../draw/utils/config';
+import { positionLayerNames } from '../draw/utils/position-layer-names';
 
 import './styles/flowchart.scss';
 
@@ -102,6 +103,8 @@ export class FlowChart extends Component {
     this.slicedPipelineActionBarRef = React.createRef();
     this.layersRef = React.createRef();
     this.layerNamesRef = React.createRef();
+    // Holds the latest view transform so the layer labels can self-position
+    this.viewTransformRef = React.createRef();
 
     // Cache for node style overrides
     this.nodeStyleOverridesCache = null;
@@ -304,8 +307,14 @@ export class FlowChart extends Component {
       true
     );
 
-    // Update layer label positions
-    this.positionLayerNames(transform);
+    // Record the latest transform and position the layer labels
+    this.viewTransformRef.current = transform;
+    positionLayerNames(
+      this.layerNamesRef.current,
+      this.props.layers,
+      transform,
+      this.props.orientation
+    );
 
     // Update extents
     this.updateViewExtents(transform);
@@ -333,45 +342,6 @@ export class FlowChart extends Component {
       false
     );
   }
-
-  /**
-   * Position the layer name labels for the given view transform.
-   * @param {Object} transform The current view transform
-   */
-  positionLayerNames(transform) {
-    if (!this.layerNamesRef?.current) {
-      return;
-    }
-    const { k: scale, x, y } = transform;
-    const layerNames = this.layerNamesRef.current.querySelectorAll(
-      '.pipeline-layer-name'
-    );
-    this.props.layers.forEach((layer, i) => {
-      const el = layerNames[i];
-      if (!el) {
-        return;
-      }
-      if (this.props.orientation === 'vertical') {
-        const updateY = y + (layer.y + (layer.height || 0) / 2) * scale;
-        el.style.transform = `translateY(${updateY}px)`;
-      } else {
-        const updateX = x + (layer.x + (layer.width || 0) / 2) * scale;
-        el.style.transform = `translateX(${updateX}px) translateX(-50%)`;
-      }
-    });
-  }
-
-  /**
-   * Re-applies layer label positions once the labels have been (re)rendered.
-   * The label elements are created in a post-paint effect, so the first
-   * onViewChange can run before they exist; positioning them here ensures they
-   * land correctly without requiring a manual resize.
-   */
-  handleLayerNamesRendered = () => {
-    if (this.view) {
-      this.positionLayerNames(getViewTransform(this.view));
-    }
-  };
 
   /**
    * Updates view extents based on the current view transform.
@@ -967,7 +937,7 @@ export class FlowChart extends Component {
           chartSize={chartSize}
           orientation={orientation}
           layerNamesRef={this.layerNamesRef}
-          onLayersRendered={this.handleLayerNamesRendered}
+          viewTransformRef={this.viewTransformRef}
         />
 
         <FeedbackButton
