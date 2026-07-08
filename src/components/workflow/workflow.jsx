@@ -4,7 +4,12 @@ import { select } from 'd3-selection';
 import { getHeap } from '../../tracking';
 import { getDataTestAttribute } from '../../utils/get-data-test-attribute';
 import { changed } from '../../utils';
-import { updateChartSize, updateZoom } from '../../actions';
+import { createNodeRemeasurer } from '../../utils/node-remeasure';
+import {
+  updateChartSize,
+  updateZoom,
+  incrementNodeMeasureToken,
+} from '../../actions';
 import {
   toggleSingleModularPipelineExpanded,
   toggleModularPipelineActive,
@@ -88,6 +93,12 @@ export class Workflow extends Component {
     this.layerNamesRef = React.createRef();
     // Holds the latest view transform so the layer labels can self-position
     this.viewTransformRef = React.createRef();
+
+    // Re-measures node label widths if the chart was mounted while hidden
+    this.nodeRemeasurer = createNodeRemeasurer(
+      () => this.containerRef.current,
+      () => this.props.onRemeasureNodes()
+    );
   }
 
   componentDidMount() {
@@ -103,6 +114,7 @@ export class Workflow extends Component {
     this.updateViewExtents();
     this.addGlobalEventListeners();
     this.update();
+    this.nodeRemeasurer.start();
 
     if (this.props.tooltip) {
       this.showTooltip(null, null, this.props.tooltip);
@@ -214,6 +226,7 @@ export class Workflow extends Component {
    */
   handleWindowResize = () => {
     this.updateChartSize();
+    this.nodeRemeasurer.check();
   };
 
   /**
@@ -825,6 +838,9 @@ export const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onUpdateZoom: (transform) => {
     dispatch(updateZoom(transform));
+  },
+  onRemeasureNodes: () => {
+    dispatch(incrementNodeMeasureToken());
   },
 });
 
